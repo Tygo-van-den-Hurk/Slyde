@@ -1,0 +1,39 @@
+name: Label Pull Requests
+
+on:
+  pull_request_target:
+    branches: [main, master, release, development]
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+
+  label-pull-requests:
+    name: Label Pull Requests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4.3.0
+        with: { fetch-depth: 0 }
+      - name: Extract possible types/labels
+        id: extract_types
+        run: |
+          types=$(yq -r '.[] | select(.type == true) | .name' .github/labels.yaml | paste -sd, -)
+          echo "types=$types" >> "$GITHUB_OUTPUT"
+      - name: Enforce Conventional Commits
+        uses: webiny/action-conventional-commits@v1.3.0
+        with:
+          allowed-commit-types: ${{ steps.extract_types.outputs.types }}
+      - name: Label Pull Request based on commits
+        uses: FritjofH/conventional-commit-validator@1.6
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          task_types: ${{ steps.extract_types.outputs.types }}
+          custom_labels: "{}"
+          link_on_failure: true
+          add_scope_label: false
+          add_label: true
