@@ -1,0 +1,57 @@
+name: Sync Labels
+# Syncs all repository labels with '.github/labels.yaml' when changes are
+# pushed to that file, this workflow will be run updating, creating and
+# deleting all labels according to '.github/labels.yaml'.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, master, release, development]
+    paths: [.github/labels.yaml]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  sync-labels:
+    name: Sync labels with '.github/labels.yaml'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4.3.0
+      - name: Sync labels with '.github/labels.yaml'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+
+          desired_labels=$(yq '.' .github/labels.yaml)
+          current_labels=$(gh label list --json name,color,description)
+          jq -r '.[].name' <<<"$current_labels" | while read -r label; do
+            if ! jq -e --arg name "$label" 'map(select(.name == $name)) | length > 0' <<<"$desired_labels" >/dev/null; then
+              echo "Deleting label: $label"
+              gh label delete "$label" -y || true
+            fi
+          done
+
+          # Create or update labels from desired_labels
+          jq -c '.[]' <<<"$desired_labels" | while read -r label; do
+            name=$(jq -r '.name' <<<"$label")
+            color=$(jq -r '.color' <<<"$label")
+            description=$(jq -r '.description' <<<"$label")
+
+            # Check if the label exists
+            existing=$(jq -c --arg name "$name" '.[] | select(.name == $name)' <<<"$current_labels" || true)
+            if [[ -n "$existing" ]]; then
+              existing_color=$(jq -r '.color' <<<"$existing")
+              existing_description=$(jq -r '.description' <<<"$existing")
+              if [[ "$existing_color" == "$color" && "$existing_description" == "$description" ]]; then
+                echo "Label $name is already up to date, skipping"
+                continue
+              fi
+            fi
+
+            echo "Syncing label: $name"
+            gh label create "$name" --color "$color" --description "$description" --force || true
+          done
