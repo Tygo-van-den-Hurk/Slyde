@@ -1,0 +1,41 @@
+name: Documentation Request
+description: Request additions, updates, or improvements to the documentation.
+title: "docs: "
+labels: ["docs"]
+body:
+  - type: markdown
+    attributes:
+      value: >
+        Thank you for taking the time to submit a documentation request.
+        Please provide clear and concise details to help us address it
+        efficiently.
+  - type: textarea
+    id: request
+    attributes:
+      label: Documentation request
+      description: >
+        Describe what documentation is missing, outdated, or unclear. Include
+        any suggested changes if relevant.
+      placeholder: Explain the documentation change you would like to see.
+    validations:
+      required: true
+  - type: checkboxes
+    id: code-of-conduct
+    attributes:
+      label: Code of Conduct
+      description: >
+        By submitting this issue, you agree to follow our Code of Conduct, see
+        CODE_OF_CONDUCT.md for more details.
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true
+  - type: checkboxes
+    id: no-similar
+    attributes:
+      label: No similar issues
+      description: >
+        I've searched for similar issues and found no issues that described the
+        same issues as this one
+      options:
+        - label: I've searched for similar issues and found none.
+          required: true
