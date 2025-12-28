@@ -1,0 +1,42 @@
+name: Enforce branch naming
+# Enforces that a branch is named after a conventional commit type. For example
+# the branches: `feat/**`, `fix/**`, ... are allowed but `this is a test` is
+# not allowed.
+
+on:
+  pull_request:
+    branches: [main, master, release, development]
+    types: [opened]
+
+jobs:
+  labeler:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Check branch name compare to types
+      run: |
+        branch="${{ github.head_ref }}"
+
+        # Extract allowed branch prefixes from labeler.yml where type: true
+        allowed_branch_names=$(yq '.[] | select(.type == true) | .name' .github/labels.yaml)
+
+        echo "Checking branch: $branch"
+        echo "Allowed branch prefixes are:"
+        echo "$allowed_branch_names"
+        echo ""
+
+        match_found=0
+        for pattern in $allowed_branch_names; do
+          pattern=$(echo "$pattern" | sed 's|\\\\/|/|g' | sed 's|\"||g')
+          if [[ "$branch" =~ ^$pattern(/.*)?$ ]]; then
+            echo "Branch name matches allowed pattern: $pattern"
+            match_found=1
+            break
+          fi
+        done
+
+        if [[ $match_found -eq 0 ]]; then
+          echo "Branch name does not match any allowed pattern!"
+          exit 1
+        fi
