@@ -1,0 +1,22 @@
+name: Prevent merge commits
+# Searches the git history for merge commits and fails when such commits are
+# found. We do not tolerate merge commits as they make the git history less
+# readable.
+
+on:
+  pull_request:
+    branches: [main, master, release, development]
+    types: [opened, synchronize, reopened]
+
+jobs:
+
+  check-history-for-merge-commits:
+    name: Check history for merge commits
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4.3.0
+      - name: Check history for merge commits
+        uses: NexusPHP/no-merge-commits@v2.2.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
