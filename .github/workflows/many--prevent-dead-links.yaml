@@ -1,0 +1,34 @@
+name: Prevent Dead links
+# Looks in the repository for dead links in markdown and HTML files, and fails
+# if links to dead websites or non-existing files are present in the
+# repository.
+
+on:
+  workflow_dispatch:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [main, master, release, development]
+    paths: [ "**/*.md", "**/*.markdown", "**/*.html", "**/*.htm" ]
+  push:
+    branches: [main, master, release, development]
+    paths: [ "**/*.md", "**/*.markdown", "**/*.html", "**/*.htm" ]
+  schedule: [cron: "0 0 * * 0"]
+
+jobs:
+
+  check-all-the-links:
+    name: Check all the links
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4.3.0
+      - name: Check the links
+        uses: lycheeverse/lychee-action@v2.6.1
+        with:
+          fail: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+          args: >
+            --verbose
+            --max-concurrency 1
+            --glob-ignore-case **/*.{md,markdown,html,htm}
+            --hidden
