@@ -1,10 +1,9 @@
-FROM node:24 AS build
+FROM node:24-alpine AS build
 WORKDIR /build
 COPY package.json package-lock.json ./
 RUN npm ci
 COPY ./ ./
-RUN npm run test
-RUN npm run build
+RUN npm run test && npm run build
 
 FROM node:24-alpine AS production
 WORKDIR /app
