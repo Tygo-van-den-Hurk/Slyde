@@ -1,0 +1,93 @@
+name: Publish package to GitHub Packages
+
+on:
+  push:
+    tags: [v*.*.*]
+    branches: [main, master, release, development]
+    paths:
+      - test/**
+      - lib/**
+      - src/**
+      - '*package*'
+      - '*tsconfig*'
+      - '*vitest*'
+      - '*eslint*'
+      - '*prettier*'
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build:
+    name: Publish new NPM package
+    runs-on: ubuntu-latest
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6.0.1
+      - name: Set up Node.js
+        uses: actions/setup-node@v6.1.0
+        with:
+          node-version: 24
+          cache-dependency-path: package-lock.json
+          registry-url: 'https://npm.pkg.github.com'
+          cache: 'npm'
+      - name: Read `package.json` file and output contents
+        id: package
+        run: |
+            version=$(node --print "require('#package').version")
+            echo "version=$version" >> $GITHUB_OUTPUT
+            echo "PACKAGE_VERSION=$version" >> $GITHUB_ENV
+            name=$(node --print "require('#package').name")
+            echo "name=$name" >> $GITHUB_OUTPUT
+            echo "PACKAGE_NAME=$name" >> $GITHUB_ENV
+      - name: Determine version and tag
+        id: version
+        run: |
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            echo "TAG_VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+            echo "npm_tag=latest" >> $GITHUB_OUTPUT
+            echo "is_release=true" >> $GITHUB_OUTPUT
+          else
+            echo "npm_tag=alpha" >> $GITHUB_OUTPUT
+            echo "is_release=false" >> $GITHUB_OUTPUT
+          fi
+      - name: Verify tag matches package.json
+        if: steps.version.outputs.is_release == 'true'
+        run: |
+          if [ "$PACKAGE_VERSION" != "$TAG_VERSION" ]; then
+            echo -n "Error: package.json version ($PACKAGE_VERSION)"
+            echo " does not match tag ($TAG_VERSION)"
+            exit 1
+          fi
+      - name: Install all dependencies
+        run: npm ci
+      - name: Build the project
+        run: npm run build
+      - name: Ensure we are not pushing a broken version
+        run: npm run test
+      - name: Turn links into permalinks on the README
+        run: |
+          file="README.md"
+          domain="github.com"
+          repo="${{ github.repository }}"
+          commit="${{ github.sha }}"
+          link="https://$domain/$repo/blob/$commit"
+          sed --in-place "s#\(\[.*\]\)(\./\([^)]*\))#\1($link/\2)#g" "$file"
+          sed --in-place "s#\(src\|srcset\)=\"\./#\1=\"$link/#g" "$file"
+      - name: Publish NPM package to registry (tags)
+        if: steps.version.outputs.is_release == 'true'
+        run: |
+          npm publish --tag ${{ steps.version.outputs.npm_tag }}
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$PACKAGE_VERSION"
+          npm dist-tag add "$PACKAGE_NAME@$PACKAGE_VERSION" "$MAJOR.$MINOR"
+          npm dist-tag add "$PACKAGE_NAME@$PACKAGE_VERSION" "$MAJOR"
+      - name: Publish NPM package to registry (push)
+        if: steps.version.outputs.is_release != 'true'
+        run: |
+          SHORT_SHA=${GITHUB_SHA:0:7}
+          npm version prerelease --preid=alpha-$SHORT_SHA --no-git-tag-version
+          npm publish --tag ${{ steps.version.outputs.npm_tag }}
+      

@@ -14,7 +14,7 @@ import yargs from 'yargs';
 
 // Helpers
 
-const NAME = pkg.name;
+const NAME = 'slyde';
 const VERSION = pkg.version;
 const EPILOGUE = `
 For the documentation go to ${chalk.underline.cyan(pkg.homepage)}. You can report bugs or create request features by opening an 
