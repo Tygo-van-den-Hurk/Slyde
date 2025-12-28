@@ -1,0 +1,48 @@
+name: Close stale issues and pull requests
+# Closes stale issues and pull requests when there is no activity for a long
+# period of time. Helps keeps the amount of open issues and pull requests down.
+
+on:
+  schedule: [cron: '0 1 * * *']
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  close-issues-and-pull-requests:
+    name: Close stale issues and pull requests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Close stale issues and pull requests
+        uses: actions/stale@v10
+        with:
+
+          # Issues
+          stale-issue-label: stale
+          close-issue-label: not planned
+          days-before-issue-stale: 30
+          days-before-issue-close: 5
+          stale-issue-message: >
+            This issue is stale because it has been open 30 days with no
+            activity. Remove stale label or comment or this will be
+            closed in 5 days.
+          close-issue-message: >
+            This issue was closed because it has been stalled for 5 days with
+            no activity.
+
+          # Pull requests
+          stale-pr-label: stale
+          close-pr-label: not planned
+          days-before-pr-stale: 45
+          days-before-pr-close: 10
+          stale-pr-message: >
+            This PR is stale because it has been open 45 days with no
+            activity. Remove stale label or comment or this will be closed in
+            10 days.
+          close-pr-message: >
+            This pull request was closed because it has been stalled for 10
+            days with no activity.
