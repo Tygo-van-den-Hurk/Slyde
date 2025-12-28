@@ -46,7 +46,8 @@ jobs:
         id: vars
         run: |
           if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
-            FULL_TAG="${GITHUB_REF#refs/tags/}"   # Remove refs/tags/
+            # Remove refs/tags/ from the github ref  
+            FULL_TAG="${GITHUB_REF#refs/tags/}"
             echo "full_tag=$FULL_TAG" >> $GITHUB_OUTPUT
             # Remove leading 'v' if present
             VERSION="${FULL_TAG#v}"
@@ -54,7 +55,8 @@ jobs:
             VERSION="${VERSION%%-*}"
             # Split version like "1.2.3" into "1.2.3", "1.2", "1"
             IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
-            echo "tags=$FULL_TAG,$MAJOR.$MINOR,$MAJOR" >> $GITHUB_OUTPUT
+            tags="$MAJOR.$MINOR.$PATCH,$MAJOR.$MINOR,$MAJOR"
+            echo "tags=$tags" >> $GITHUB_OUTPUT
           else
             echo "full_tag=latest" >> $GITHUB_OUTPUT
             echo "tags=latest" >> $GITHUB_OUTPUT
