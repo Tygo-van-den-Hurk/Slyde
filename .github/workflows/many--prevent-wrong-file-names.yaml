@@ -1,0 +1,43 @@
+name: Prevent capital file extensions
+# Prevents uppercase file extensions. This makes sure that files always end in
+# a lowercase file extension, making it easier to write workflows expecting a
+# certain file type.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [main, master, release, development]
+    paths: [ "**/*.*" ]
+  push:
+    branches: [main, master, release, development]
+    paths: [ "**/*.*" ]
+
+jobs:
+
+  check-all-files:
+    name: Check all files
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4.3.0
+      - name: Search for files violating naming convention
+        run: |
+          echo "Looking for files with capital extensions..."
+
+          # skip .git, and vendor directories
+          matches=$(find . \
+            -name .git -prune -o \
+            -path ./vendor -prune -o \
+            -path ./.github/CODEOWNERS -prune -o \
+            -path ./LICENSE -prune -o \
+            -type f -print | grep -E '(.*/.*[[:space:]].*|.*\.[A-Z]+$)' || true)
+          if [ -n "$matches" ]; then
+            echo "ERROR: Found files That do not respect naming convention:"
+            echo ""
+            echo "$matches"
+            echo ""
+            echo "Please rename the files to only use lower case extensions and no spaces."
+            exit 1
+          else
+            echo "All files respect naming convention."
+          fi
