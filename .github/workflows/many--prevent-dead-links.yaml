@@ -27,7 +27,13 @@ jobs:
         id: restore-cache
         with:
           path: .lycheecache
-          key: cache-lychee-${{ github.sha }}
+          key: >
+            cache-lychee-${{ hashFiles(
+              '**/*.md', 
+              '**/*.markdown', 
+              '**/*.html', 
+              '**/*.htm'
+            ) }}
           restore-keys: cache-lychee-
       - name: Check the links
         uses: lycheeverse/lychee-action@v2.6.1
