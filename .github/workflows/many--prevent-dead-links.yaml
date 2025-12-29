@@ -28,21 +28,22 @@ jobs:
         with:
           path: .lycheecache
           key: >
-            cache-lychee-${{ hashFiles(
+            lychee-cache-cron-${{ hashFiles(
               '**/*.md', 
               '**/*.markdown', 
               '**/*.html', 
               '**/*.htm'
             ) }}
-          restore-keys: cache-lychee-
+          restore-keys: lychee-cache-cron-
       - name: Check the links
         uses: lycheeverse/lychee-action@v2.6.1
         with:
           fail: true
           token: ${{ secrets.GITHUB_TOKEN }}
           args: >
-            --verbose --max-concurrency 1 --hidden
-            --glob-ignore-case **/*.{md,markdown,html,htm}       
+            --glob-ignore-case **/*.{md,markdown,html,htm}
+            --verbose --max-concurrency 1 --hidden --cache
+            --max-cache-age 1d 
       - name: Save lychee cache
         uses: actions/cache/save@v5.0.1
         with:
