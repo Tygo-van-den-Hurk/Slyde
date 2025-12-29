@@ -122,13 +122,10 @@ There are several ways to install Slyde: [installing an npm package](#npm-packag
 
 ### NPM package installation
 
-There are 2 ways to install Slyde using [npm](https://www.npmjs.com/). First of all using the repository syntax:
+> [!NOTE]
+> This might require a token from GitHub to function.
 
-```Shell
-npm install github:tygo-van-den-hurk/slyde
-```
-
-or using the `--registry` parameter to install slyde using [GitHub' NPM registry](https://npm.pkg.github.com/):
+To install Slyde using [npm](https://www.npmjs.com/) from [GitHub' NPM registry](https://npm.pkg.github.com/), run the following command:
 
 ```Shell
 npm install @tygo-van-den-hurk/slyde --registry=https://npm.pkg.github.com/
@@ -146,6 +143,9 @@ docker run --volume "$PWD:/src" --rm ghcr.io/tygo-van-den-hurk/slyde:latest comp
 
 ### Building from source
 
+> [!WARNING]
+> This option is not recommended even if you chose to install `--global` as this makes your system harder to replicate. The previous options are recommended for almost all use cases.
+
 You can install slyde as a dependency to your project, run the following commands:
 
 ```Shell
@@ -157,7 +157,7 @@ cd -
 npm install "$PWD/slyde"
 ```
 
-This is however not recommended even if you chose to install `--global` as this is very system dependent. The previous options are recommended for almost all use cases.
+You can also install Slyde in your path by adding the `--global` flag. You might need to restart your session after installation. 
 
 <contributing-section data-why="So that we can remove it before publishing an image or npm package.">
 
