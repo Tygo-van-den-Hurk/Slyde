@@ -77,6 +77,11 @@ jobs:
           link="https://$domain/$repo/blob/$commit"
           sed --in-place "s#\(\[.*\]\)(\./\([^)]*\))#\1($link/\2)#g" "$file"
           sed --in-place "s#\(src\|srcset\)=\"\./#\1=\"$link/#g" "$file"
+      - name: Remove sections from readme.
+        run: |
+          sed --in-place '/<badges-container/,/<\/badges-container>/d' README.md
+          sed --in-place '/<toc-section/,/<\/toc-section>/d' README.md
+          sed --in-place '/<contributing-section/,/<\/contributing-section>/d' README.md
       - name: Publish NPM package to registry (tags)
         if: steps.version.outputs.is_release == 'true'
         run: |
