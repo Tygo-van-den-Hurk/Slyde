@@ -1,11 +1,76 @@
 <div align="center">
   <picture>
-    <source srcset="docs/assets/logo-standalone.svg" media="(max-width: 600px)">
+    <source srcset="./docs/assets/logo-standalone.svg" media="(max-width: 600px)">
     <img src="./docs/assets/logo-with-text.svg" width="50%" alt="the Slyde logo">
   </picture>
   <br>
   <br>
   <p>Make beautifully animated Slydes and presentations from XML with ease! </p>
+  <badges-container data-why="since we can remove it before publishing an docker image or npm package">
+    <hr>
+    <!--~###################################~-->
+    <!--~####    Open issues and PRs    ####~-->
+    <!--~###################################~-->
+    <a href="https://github.com/Tygo-van-den-Hurk/Slyde/issues?q=is%3Aissue%20state%3Aopen%20label%3Afix">
+      <picture>
+        <source srcset="https://img.shields.io/github/issues/Tygo-van-den-Hurk/Slyde/fix?style=flat&labelColor=FFFFFF&color=f9c262&logoColor=5E2751&label=Bug%20Reports" media="(prefers-color-scheme: light)" />
+        <img src="https://img.shields.io/github/issues/Tygo-van-den-Hurk/Slyde/fix?style=flat&labelColor=2F363D&color=FF8C2B&logoColor=8F5C86&label=Bug%20Reports" alt="Contributor covenant: 3.0" />
+      </picture>
+    </a>
+    <a href="https://github.com/Tygo-van-den-Hurk/Slyde/issues?q=is%3Aissue%20state%3Aopen%20label%3Afeat">
+      <picture>
+        <source srcset="https://img.shields.io/github/issues/Tygo-van-den-Hurk/Slyde/feat?style=flat&labelColor=FFFFFF&color=f9c262&logoColor=5E2751&label=Feature%20Requests" media="(prefers-color-scheme: light)" />
+        <img src="https://img.shields.io/github/issues/Tygo-van-den-Hurk/Slyde/feat?style=flat&labelColor=2F363D&color=FF8C2B&logoColor=8F5C86&label=Feature%20Requests" alt="GitHub open feature requests" />
+      </picture>
+    </a>
+    <a href="https://github.com/Tygo-van-den-Hurk/Slyde/blob/main/LICENSE">
+      <picture>
+        <source srcset="https://img.shields.io/github/license/Tygo-van-den-Hurk/Slyde?style=flat&labelColor=FFFFFF&color=f9c262&logoColor=5E2751&label=Licence" media="(prefers-color-scheme: light)" />
+        <img src="https://img.shields.io/github/license/Tygo-van-den-Hurk/Slyde?style=flat&labelColor=2F363D&color=FF8C2B&logoColor=8F5C86&label=Licence" alt="The Repository License badge" />
+      </picture>
+    </a>
+    <a href="https://github.com/Tygo-van-den-Hurk/Slyde/stargazers">
+      <picture>
+        <source srcset="https://img.shields.io/github/stars/Tygo-van-den-Hurk/Slyde?style=flat&labelColor=FFFFFF&color=f9c262&label=Stars" media="(prefers-color-scheme: light)" />
+        <img src="https://img.shields.io/github/stars/Tygo-van-den-Hurk/Slyde?style=flat&labelColor=2F363D&color=FF8C2B&label=Stars" alt="amount of stars on GitHub" />
+      </picture>
+    </a>
+    <!-- ENABLE AFTER FIRST RELEASE
+    <a href="https://github.com/Tygo-van-den-Hurk/Slyde/releases">
+      <picture>
+        <source srcset="https://img.shields.io/github/release/Tygo-van-den-Hurk/Slyde?style=flat&display_name=release&label=Release&labelColor=FFFFFF&color=f9c262" media="(prefers-color-scheme: light)" />
+        <img src="https://img.shields.io/github/release/Tygo-van-den-Hurk/Slyde?style=flat&display_name=release&label=Release&labelColor=2F363D&color=FF8C2B" alt="newest release" />
+      </picture>
+    </a> -->
+    <br>
+    <!--~###################################~-->
+    <!--~####      Repository CI/CD     ####~-->
+    <!--~###################################~-->
+    <a href="https://github.com/Tygo-van-den-Hurk/Slyde/actions/workflows/push--deploy-github-pages.yaml">
+      <picture>
+        <source srcset="https://img.shields.io/github/actions/workflow/status/Tygo-van-den-Hurk/Slyde/push--deploy-github-pages.yaml?style=flat&labelColor=FFFFFF&color=f9c262&logo=readthedocs&logoColor=000000&label=Docs&branch=main&event=push" media="(prefers-color-scheme: light)" />
+        <img src="https://img.shields.io/github/actions/workflow/status/Tygo-van-den-Hurk/Slyde/push--deploy-github-pages.yaml?style=flat&labelColor=2F363D&color=FF8C2B&logo=readthedocs&logoColor=FFFFFF&label=Docs&branch=main&event=push" alt="Website deployment Status" />
+      </picture>
+    </a>
+    <a href="https://github.com/Tygo-van-den-Hurk/Slyde/actions/workflows/push--basic-ci-checks.yaml">
+      <picture>
+        <source srcset="https://img.shields.io/github/actions/workflow/status/Tygo-van-den-Hurk/Slyde/push--basic-ci-checks.yaml?style=flat&labelColor=FFFFFF&color=f9c262&logo=GitHub%20Actions&logoColor=000000&branch=main&event=push&label=Tests" media="(prefers-color-scheme: light)" />
+        <img src="https://img.shields.io/github/actions/workflow/status/Tygo-van-den-Hurk/Slyde/push--basic-ci-checks.yaml?style=flat&labelColor=2F363D&color=FF8C2B&logo=GitHub%20Actions&logoColor=FFFFFF&branch=main&event=push&label=Tests" alt="Code coverage tests" />
+      </picture>
+    </a>
+    <a href="https://github.com/Tygo-van-den-Hurk/Slyde/actions/workflows/many--build-and-push-image.yaml">
+      <picture>
+        <source srcset="https://img.shields.io/github/actions/workflow/status/Tygo-van-den-Hurk/Slyde/many--build-and-push-image.yaml?style=flat&labelColor=FFFFFF&color=f9c262&logo=docker&logoColor=000000&label=Docker&branch=main&event=push" media="(prefers-color-scheme: light)" />
+        <img src="https://img.shields.io/github/actions/workflow/status/Tygo-van-den-Hurk/Slyde/many--build-and-push-image.yaml?style=flat&labelColor=2F363D&color=FF8C2B&logo=docker&logoColor=FFFFFF&label=Docker&branch=main&event=push" alt="Docker image building" />
+      </picture>
+    </a>
+    <a href="https://github.com/Tygo-van-den-Hurk/Slyde/actions/workflows/many--publish-npm-package.yaml">
+      <picture>
+        <source srcset="https://img.shields.io/github/actions/workflow/status/Tygo-van-den-Hurk/Slyde/many--publish-npm-package.yaml?style=flat&labelColor=FFFFFF&color=f9c262&logo=npm&logoColor=000000&label=NPM&branch=main&event=push" media="(prefers-color-scheme: light)" />
+        <img src="https://img.shields.io/github/actions/workflow/status/Tygo-van-den-Hurk/Slyde/many--build-and-push-image.yaml?style=flat&labelColor=2F363D&color=FF8C2B&logo=npm&logoColor=FFFFFF&label=NPM&branch=main&event=push" alt="NPM package building" />
+      </picture>
+    </a>
+  </badges-container>
 </div>
 
 ## What is Slyde?
