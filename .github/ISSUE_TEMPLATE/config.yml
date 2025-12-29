@@ -1,1 +1,5 @@
 blank_issues_enabled: false
+contact_links:
+  - name: Ask Questions
+    about: Ask questions to the community.
+    url: https://github.com/Tygo-van-den-Hurk/Slyde/discussions/new?category=q-a
