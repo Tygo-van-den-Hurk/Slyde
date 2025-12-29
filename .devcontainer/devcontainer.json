@@ -1,11 +1,36 @@
 {
   "name": "Slyde",
-  "image": "node:24",
-  "remoteUser": "user",
-  "features": {
-    "git": "latest",
-    "gh-cli": "latest"
-  },
+  "build": { "dockerfile": "Dockerfile" },
   "postCreateCommand": "npm ci",
-  "workspaceFolder": "/workspace"
+  "containerEnv": { 
+    "SHELL": "/bin/bash"
+  },
+  "workspaceFolder": "/workspaces/Slyde",
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/dhoeric/features/act:1": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "formulahendry.auto-close-tag",
+        "aaron-bond.better-comments",
+        "usernamehw.errorlens",
+        "wmaurer.change-case",
+        "streetsidesoftware.code-spell-checker",
+        "fill-labs.dependi",
+        "EditorConfig.EditorConfig",
+        "dbaeumer.vscode-eslint",
+        "Tobermory.es6-string-html",
+        "pushqrdx.inline-html",
+        "github.vscode-github-actions",
+        "donjayamanne.githistory",
+        "codezombiech.gitignore",
+        "christian-kohler.npm-intellisense",
+        "bradlc.vscode-tailwindcss",
+        "DotJoshJohnson.xml"
+      ]
+    }
+  }
 }
