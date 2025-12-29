@@ -9,6 +9,17 @@ import { Registry } from '#lib/core/registry';
 
 /** The `Component` base class before the registry is injected. */
 abstract class Component implements ComponentInterface {
+  /** The levels of certain components. Used for selectors: `slyde-component[level=1]`. */
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  public static readonly level = Object.freeze({
+    /** The level at which the blocks can be placed. */
+    block: 2,
+    /** The level at which the presentation can be placed. */
+    presentation: 0,
+    /** The level at which the slides can be placed. */
+    slide: 1,
+  });
+
   /** Utils related to components and their workings. */
   // eslint-disable-next-line @typescript-eslint/naming-convention
   public static readonly utils = { ...componentUtils };

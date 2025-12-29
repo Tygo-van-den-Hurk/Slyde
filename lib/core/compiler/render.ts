@@ -251,7 +251,7 @@ export const renderElement = function renderElement(
  */
 // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
 export const render = function render(tree: XmlParserResult): string {
-  const level = 0;
+  const level = Component.level.presentation;
   const id = 0;
   const markup = 'default';
   let state: State = { id, index: 0, level, markup, path: [] };

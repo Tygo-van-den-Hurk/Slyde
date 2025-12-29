@@ -201,7 +201,7 @@ export class Presentation
 
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this, jsdoc/require-jsdoc
   public hierarchy(): ReturnType<Component.Interface['hierarchy']> {
-    return [0];
+    return [Component.level.presentation];
   }
 
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this, jsdoc/require-jsdoc

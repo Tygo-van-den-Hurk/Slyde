@@ -43,6 +43,6 @@ export class TitleSlide extends Component {
 
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this, jsdoc/require-jsdoc
   public hierarchy(): ReturnType<Component.Interface['hierarchy']> {
-    return [1];
+    return [Component.level.slide];
   }
 }
