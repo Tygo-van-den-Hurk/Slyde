@@ -73,6 +73,22 @@
   </badges-container>
 </div>
 
+<toc-section data-why="So that we can remove it before publishing an image or npm package.">
+
+# Slyde
+
+- [Slyde](#slyde)
+  - [What is Slyde?](#what-is-slyde)
+  - [Features](#features)
+  - [Installation](#installation)
+    - [NPM package installation](#npm-package-installation)
+    - [Docker image installation](#docker-image-installation)
+    - [Building from source](#building-from-source)
+  - [Contributing](#contributing)
+  - [Licence](#licence)
+
+</toc-section>
+
 ## What is Slyde?
 
 Slyde is a program to create professional beautifully animated presentations from XML. It is fast and easy, even for non-technical people.
@@ -99,3 +115,58 @@ This would output the following fully animated presentation:
 - Rich plugin system extend Slyde in under a minute
 - Exports are offline-ready HTML files
 - Embed images in your presentation
+
+## Installation
+
+There are several ways to install Slyde: [installing an npm package](#npm-package-installation), [pull docker image](#docker-image-installation), or [building from source](#building-from-source).
+
+### NPM package installation
+
+There are 2 ways to install Slyde using [npm](https://www.npmjs.com/). First of all using the repository syntax:
+
+```Shell
+npm install github:tygo-van-den-hurk/slyde
+```
+
+or using the `--registry` parameter to install slyde using [GitHub' NPM registry](https://npm.pkg.github.com/):
+
+```Shell
+npm install @tygo-van-den-hurk/slyde --registry=https://npm.pkg.github.com/
+```
+
+You can also install Slyde in your path by adding the `--global` flag. You might need to restart your session after installation. 
+
+### Docker image installation
+
+To install and run slyde using [docker](http://docker.com), run the following command:
+
+```Shell
+docker run --volume "$PWD:/src" --rm ghcr.io/tygo-van-den-hurk/slyde:latest compile /src/slyde.xml --output /src/slyde.html
+```
+
+### Building from source
+
+You can install slyde as a dependency to your project, run the following commands:
+
+```Shell
+git clone http://github.com/tygo-van-den-hurk/slyde "$PWD/slyde"
+cd "$PWD/slyde"
+npm ci
+npm run build
+cd -
+npm install "$PWD/slyde"
+```
+
+This is however not recommended even if you chose to install `--global` as this is very system dependent. The previous options are recommended for almost all use cases.
+
+<contributing-section data-why="So that we can remove it before publishing an image or npm package.">
+
+## Contributing
+
+If you would like to make Slyde better, see the [contributing guidelines](./CONTRIBUTING.md).
+
+</contributing-section>
+
+## Licence
+
+All files in this repository fall under a [licence](./LICENSE).
