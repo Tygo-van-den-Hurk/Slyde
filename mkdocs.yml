@@ -21,8 +21,11 @@ theme:
 plugins: 
   - search
   - mkdocstrings
+  - callouts
 
 markdown_extensions:
+  - admonition
+  - pymdownx.details
   - fenced_code
   - codehilite
   - attr_list
