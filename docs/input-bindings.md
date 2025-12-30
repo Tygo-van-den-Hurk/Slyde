@@ -1,6 +1,6 @@
 # Input Bindings
 
-Slyde uses keybindings, and mouse events to make your life easier. I tried to stick to common keybindings if similar software.
+Slyde uses keybindings, and mouse events to make your life easier. I tried to stick to common keybindings of similar software.
 
 ## Next Slide
 
