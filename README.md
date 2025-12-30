@@ -138,7 +138,7 @@ You can also install Slyde in your path by adding the `--global` flag. You might
 To install and run slyde using [docker](http://docker.com), run the following command:
 
 ```Shell
-docker run --volume "$PWD:/src" --rm ghcr.io/tygo-van-den-hurk/slyde:latest compile /src/slyde.xml --output /src/slyde.html
+docker run --interactive --tty --volume "$PWD:/pwd" --rm ghcr.io/tygo-van-den-hurk/slyde:latest compile /pwd/slyde.xml --output /pwd/slyde.html
 ```
 
 ### Building from source
