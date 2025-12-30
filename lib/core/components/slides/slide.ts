@@ -1,8 +1,5 @@
 import { Component } from '#lib/core/components/class';
 
-// eslint-disable-next-line @typescript-eslint/no-magic-numbers
-const divideBy2 = (num: number): number => num / 2;
-
 /**
  * The `Slide` object. Should be the standard 2nd tier object.
  */
@@ -17,9 +14,12 @@ export class Slide extends Component {
   public constructor(args: Component.ConstructorArguments) {
     super(args);
     this.title = args.attributes.title;
-    this.padding = Number.parseInt(args.attributes.padding ?? '8', 10);
+    this.padding = Number.parseInt(args.attributes.padding ?? '4', 10);
     if (Number.isNaN(this.padding)) {
-      throw new Error(`Expected padding to be a integer, but found ${args.attributes.padding}.`);
+      throw new Error(
+        `Expected padding to be a integer, but found ${args.attributes.padding} ` +
+          `at ${this.path.join('.')}.`
+      );
     }
   }
 
@@ -27,20 +27,23 @@ export class Slide extends Component {
   public render({
     children,
   }: Component.RenderArguments): ReturnType<Component.Interface['render']> {
-    if (typeof this.title === 'string')
+    if (typeof this.title === 'string') {
       // eslint-disable-next-line no-inline-comments
       return /*HTML*/ `
-      <div class="p-${this.padding} w-full h-full">
-        <h2 class="pb-${divideBy2(this.padding)} text-primary font-bold text-lg">${this.title}</h2>
-        <div class="w-full px-${divideBy2(this.padding)}">
-          ${children?.() ?? ''}
+        <div class="w-full h-full" style="padding: calc(${this.padding} * var(--unit));">
+          <h2 class="text-primary font-bold text-xl" style="padding-bottom: calc(${this.padding} * var(--unit) / 2);">
+            ${this.title}
+          </h2>
+          <div class="w-full" style="padding: 0px calc(${this.padding} * var(--unit) / 2);">
+            ${children?.() ?? ''}
+          </div>
         </div>
-      </div>
-    `;
+      `;
+    }
 
     // eslint-disable-next-line no-inline-comments
     return /*HTML*/ `
-      <div class="p-${this.padding} w-full h-full">
+      <div class="w-full h-full" style="padding: calc(${this.padding} * var(--unit));">
         ${children?.() ?? ''}
       </div>
     `;
