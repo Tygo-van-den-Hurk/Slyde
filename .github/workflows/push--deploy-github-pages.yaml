@@ -26,6 +26,31 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6.0.1
+      - name: Restore lychee cache
+        uses: actions/cache@v5.0.1
+        id: lychee-cache
+        with:
+          path: .lycheecache
+          key: >
+            lychee-cache-docs-${{ hashFiles(
+              'docs/**/*.md', 
+              'docs/**/*.markdown'
+            ) }}
+          restore-keys: lychee-cache-docs-
+      - name: Check the links
+        uses: lycheeverse/lychee-action@v2.6.1
+        with:
+          fail: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+          args: >
+            docs --no-progress --hidden --verbose
+            --cache --max-cache-age 1d
+            --max-concurrency 1
+      - name: Save lychee cache
+        uses: actions/cache/save@v5.0.1
+        with:
+          path: .lycheecache
+          key: ${{ steps.lychee-cache.outputs.cache-primary-key }}
       - name: Setup Pages
         uses: actions/configure-pages@v5.0.0
       - name: Set up Python
@@ -44,27 +69,6 @@ jobs:
         run: pip install --requirement 'docs/requirements.txt'
       - name: Build site with MkDocs
         run: mkdocs --verbose --color build --site-dir ./_site
-      - name: Restore lychee cache
-        uses: actions/cache@v5.0.1
-        id: lychee-cache
-        with:
-          path: .lycheecache
-          key: lychee-cache-docs-${{ hashFiles('docs/**/*.html', 'docs/**/*.htm') }}
-          restore-keys: lychee-cache-docs-
-      - name: Check the links
-        uses: lycheeverse/lychee-action@v2.6.1
-        with:
-          fail: true
-          token: ${{ secrets.GITHUB_TOKEN }}
-          args: >
-            ./_site --verbose --max-concurrency 1
-            --glob-ignore-case '**/*.{html,htm}'
-            --hidden --no-progress --cache --max-cache-age 1d
-      - name: Save lychee cache
-        uses: actions/cache/save@v5.0.1
-        with:
-          path: .lycheecache
-          key: ${{ steps.lychee-cache.outputs.cache-primary-key }}
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4.0.0
         with: { path: ./_site }
