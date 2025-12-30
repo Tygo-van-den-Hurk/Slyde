@@ -24,6 +24,20 @@ All commit messages must follow the [conventional commit specification](https://
 
 If your commit is a breaking change, please mark it as follows: `<type>!: <commit message>`. We strive to keep backwards compatibility as much as possible.
 
+### Line Length
+
+Please keep your title 66 characters or less, and your body lines 80 characters or less.
+
+### Example commit
+
+This is a valid conventional commit:
+
+```Commit
+fix: all bugs in the repository
+
+This commit fixes all bugs in the repository.
+```
+
 ## Branch Naming Conventions
 
 Much like conventional commits we use conventional branch naming. This means that depending on what you're working on you should name your branch differently. For example:
