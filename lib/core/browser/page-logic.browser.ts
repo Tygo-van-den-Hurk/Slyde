@@ -1,18 +1,18 @@
 import type { DeepReadonly } from '#lib/types';
 import { Logger } from '#lib/logger';
 
-let hideTimeout: NodeJS.Timeout | undefined; // eslint-disable-line @typescript-eslint/init-declarations
+/** Checks if the document is supposed to viewed as a PDF. */
+export const isPDF = function isPDF(): boolean {
+  const params = new URLSearchParams(window.location.search);
+  if (params.has('pdf')) return true;
+  return params.has('type', 'pdf');
+};
 
-/** Hides mouse cursor when its not moving, shows the mouse cursor when it is. */
-export const handleMouseMove = function handleMouseMove(): void {
-  document.documentElement.style.cursor = 'default';
-
-  clearTimeout(hideTimeout);
-
-  const second = 1000;
-  hideTimeout = setTimeout(() => {
-    document.documentElement.style.cursor = 'none';
-  }, second);
+/** Adds enables the stacked layout in the body. */
+export const setStackedLayout = function setStackedLayout(): void {
+  if (!isPDF()) return;
+  Logger.debug('is a PDF, forcing stacked layout.');
+  document.body.classList.add('pdf');
 };
 
 /**
@@ -34,15 +34,15 @@ export const setCurrentSlideUrlHash = function setCurrentSlideUrlHash(index: num
  * **Example**
  * ```TypeScript
  * // throws an error
- * window.location.hash = "$slide-a";
+ * window.location.hash = "#slide-a";
  * getCurrentSlideUrlHash();
  *
  * // returns null
- * window.location.hash = "$slide-a";
+ * window.location.hash = "#slide-a";
  * getCurrentSlideUrlHash({ allowMissing: true });
  *
  * // returns the number 1
- * window.location.hash = "$slide-1";
+ * window.location.hash = "#slide-1";
  * getCurrentSlideUrlHash({ ... });
  * ```
  *
@@ -126,6 +126,8 @@ export const handleUrlHashChange = function handleUrlHashChange(
 /** Handles mouse presses on the document, and moves slides accordingly. */
 // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
 export const handleMousePresses = function handleMousePresses(event: MouseEvent): void {
+  if (isPDF()) return;
+
   // Letting the "handle touch" function handle clicks if they are on mobile.
   if ('ontouchstart' in window || navigator.maxTouchPoints > 0) return;
 
@@ -139,6 +141,8 @@ export const handleMousePresses = function handleMousePresses(event: MouseEvent)
 /** Handles key presses on the document, and moves slides accordingly. */
 // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
 export const handleKeyPresses = function handleKeyPresses(event: KeyboardEvent): void {
+  if (isPDF()) return;
+
   switch (event.key) {
     case 'Enter':
     case ' ':
@@ -159,6 +163,8 @@ export const handleKeyPresses = function handleKeyPresses(event: KeyboardEvent):
 /** Handles scrolling through on the document, and moves slides accordingly. */
 // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
 export const handleScrollEvents = function handleScrollEvents(event: WheelEvent): void {
+  if (isPDF()) return;
+
   if (event.deltaY < 0) goToNextSlide();
   if (event.deltaY > 0) goToPreviousSlide();
 };
@@ -169,6 +175,8 @@ export const handleScrollEvents = function handleScrollEvents(event: WheelEvent)
  */
 // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
 export const handleTouchEvents = function handleTouchEvents(event: TouchEvent): void {
+  if (isPDF()) return;
+
   const half = 2;
   const screenWidth = window.innerWidth;
   for (const touch of event.touches) {
@@ -183,9 +191,26 @@ export const handleTouchEvents = function handleTouchEvents(event: TouchEvent): 
   }
 };
 
+let hideTimeout: NodeJS.Timeout | undefined; // eslint-disable-line @typescript-eslint/init-declarations
+
+/** Hides mouse cursor when its not moving, shows the mouse cursor when it is. */
+export const handleMouseMove = function handleMouseMove(): void {
+  if (isPDF()) return;
+
+  document.documentElement.style.cursor = 'default';
+
+  clearTimeout(hideTimeout);
+
+  const second = 1000;
+  hideTimeout = setTimeout(() => {
+    document.documentElement.style.cursor = 'none';
+  }, second);
+};
+
 /** Prevents context menus from showing up when right clicking. */
 // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
-export const preventContextMenus = function preventContextMenus(event: MouseEvent): void {
+export const handleContextMenus = function handleContextMenus(event: MouseEvent): void {
+  if (isPDF()) return;
   event.preventDefault();
 };
 
@@ -193,20 +218,23 @@ export const preventContextMenus = function preventContextMenus(event: MouseEven
 export const addEventListeners = function addEventListeners(): void {
   window.addEventListener('prev:slide', goToPreviousSlide);
   window.addEventListener('next:slide', goToNextSlide);
-  window.addEventListener('contextmenu', preventContextMenus);
   window.addEventListener('load', setupUrlHashCallBack);
+  window.addEventListener('load', setStackedLayout);
   window.addEventListener('hashchange', handleUrlHashChange);
-  window.addEventListener('keydown', handleKeyPresses);
   window.addEventListener('mousedown', handleMousePresses);
+  window.addEventListener('keydown', handleKeyPresses);
   window.addEventListener('wheel', handleScrollEvents);
-  window.addEventListener('mousemove', handleMouseMove);
   window.addEventListener('touchstart', handleTouchEvents);
+  window.addEventListener('mousemove', handleMouseMove);
+  window.addEventListener('contextmenu', handleContextMenus);
 };
 
 /** The full setup code to run when first opening the document */
 // eslint-disable-next-line no-inline-comments
 export const setupScriptCode = /*JavaScript*/ `
   "use strict";
+  ${isPDF.toString()}
+  ${setStackedLayout.toString()}
   let hideTimeout;
   ${handleMouseMove.toString()}
   const regex = ${regex.toString()};
@@ -220,6 +248,6 @@ export const setupScriptCode = /*JavaScript*/ `
   ${handleKeyPresses.toString()}
   ${handleScrollEvents.toString()}
   ${handleTouchEvents.toString()}
-  ${preventContextMenus.toString()}
+  ${handleContextMenus.toString()}
   (${addEventListeners.toString()})(); // Executes immediately.  
 `;

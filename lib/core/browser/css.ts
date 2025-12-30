@@ -1,3 +1,5 @@
+import { Component } from '#lib/core/components/class';
+
 /** All properties that a Slyde HTML document requires. */
 export interface SlydeHtmlDocumentCssProperties {
   /** The background color of the document */
@@ -36,15 +38,17 @@ export const tailwindConfig = function tailwindConfig({
        */
       extend: {},
 
-      /** The sizes of fonts */
+      /** The different font sizes */
       fontSize: {
-        '2xl': 'calc(var(--font-size) * 1.75)',
+        '2xl': 'calc(var(--font-size) * 2.50)',
         '2xs': 'calc(var(--font-size) * 0.25)',
-        '3xl': 'calc(var(--font-size) * 2.00)',
+        '3xl': 'calc(var(--font-size) * 3.00)',
+        '4xl': 'calc(var(--font-size) * 3.50)',
+        '5xl': 'calc(var(--font-size) * 4.00)',
         base: 'calc(var(--font-size) * 1.00)',
-        lg: 'calc(var(--font-size) * 1.25)',
+        lg: 'calc(var(--font-size) * 1.50)',
         sm: 'calc(var(--font-size) * 0.75)',
-        xl: 'calc(var(--font-size) * 1.50)',
+        xl: 'calc(var(--font-size) * 2.00)',
         xs: 'calc(var(--font-size) * 0.50)',
       },
 
@@ -97,49 +101,117 @@ const nothingSelectable = /*CSS*/ `
   }
 `;
 
-/** The only part of the CSS that cannot be done using TailWindCss. */
-export const baseCSS = function baseCSS({
+// eslint-disable-next-line no-inline-comments
+const doNotDisplayListCss = /*CSS*/ `
+  head, style, script {
+    display: none !important;
+  }
+`;
+
+// eslint-disable-next-line no-inline-comments
+const latexLibStyling = /*CSS*/ `
+  mjx-container { 
+    display: inline-block;
+    vertical-align: middle;
+  }
+`;
+
+const setVarsBodyCss = function setVarsBodyCss({
   background,
   foreground,
+  primary,
+  secondary,
   size,
-}: Readonly<SlydeHtmlDocumentCssProperties>): string {
+}: SlydeHtmlDocumentCssProperties): string {
   // eslint-disable-next-line no-inline-comments
   return /*CSS*/ `
-    head, style, script { display: none !important; }
-    ${htmlConfig} ${nothingSelectable}
-
-    body {
-      background-color: ${background};
-      aspect-ratio: ${size.width} / ${size.height};
-      width: min(100vw, calc(100vh * ${size.width} / ${size.height}));
-      height: min(100vh, calc(100vw * ${size.height} / ${size.width}));
-      position: relative;
-      overflow: hidden;
-      container-name: document;
-      container-type: size;
-      --unit: 1cqh !important;
-      color: ${foreground};
-      /* This is not perfect, it needs some more min-max-math-ing */
-      --font-size: min(2vw*(100/${size.width}),100vh*(2/${size.height})) !important;
-      font-size: var(--font-size);
+    /*
+     !!!! Any changes to this function are very much breaking changes !!!!
+     */
+    body { 
+      --width: ${size.width} !important;
+      --height: ${size.height} !important;
+      --foreground: ${foreground} !important;
+      --background: ${background} !important;
+      --secondary: ${secondary} !important;
+      --primary: ${primary} !important;
     }
+  `;
+};
 
-    mjx-container { 
-      display: inline-block;
-      vertical-align: middle;
-    }
+const fontSize = 1;
 
-    ${Array.from(
-      { length: 10 },
-      // eslint-disable-next-line no-inline-comments
-      (_ignore, index) => /*CSS*/ `
-          slyde-component[level="${index}"] {
-            font-size: calc((${
-              // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-              (93 / 100) ** index
-            }) * var(--font-size));
-          }
-        `
-    ).join('\n\n')}
+// eslint-disable-next-line no-inline-comments
+const bodyCss = /*CSS*/ `
+  /* CSS to always apply to the body */
+  body {
+    color: var(--foreground);
+    position: relative;
+    
+    --unit: min(
+      (min(100vw, calc(100vh * var(--width) / var(--height))) / var(--width)),
+      (min(100vh, calc(100vw * var(--height) / var(--width))) / var(--height)),
+    ) !important;
+
+    container-name: document;
+    container-type: size;
+    width: calc(var(--width) * var(--unit));
+
+    /* This is not perfect, it needs some more min-max-math-ing */
+    --font-size: min(
+      ${fontSize} * 1vw * (100 / var(--width)), 
+      100vh * (${fontSize} / var(--height))
+    ) !important;
+    font-size: var(--font-size);
+  }
+
+  body:not(.pdf) {
+    overflow: hidden;
+    aspect-ratio: var(--width) / var(--height);
+    height: min(100vh, calc(100vw * var(--height) / var(--width)));
+  }
+  
+  body.pdf {
+    overflow-x: scroll;
+    height: 100vh;
+  }
+`;
+
+// eslint-disable-next-line no-inline-comments
+const slideCss = /*CSS*/ `
+  
+  body slyde-component[level="${Component.level.slide}"] {
+    display: block;
+    background-color: var(--background);
+    margin-bottom: var(--unit);
+    width: 100%;
+    aspect-ratio: var(--width) / var(--height);
+  }
+
+  body:not(.pdf) slyde-component[level="${Component.level.slide}"] {
+    display: none;
+  }
+  
+  /* Move to a separate style element later to allow JS to alter it. */
+  body:not(.pdf) slyde-component[level="${Component.level.slide}"]:first-of-type {
+    display: block;
+  }
+
+  body slyde-component[level="${Component.level.slide}"]:last-child {
+    margin-bottom: 0;
+  }
+`;
+
+/** The only part of the CSS that cannot be done using TailWindCss. */
+export const baseCSS = function baseCSS(args: SlydeHtmlDocumentCssProperties): string {
+  // eslint-disable-next-line no-inline-comments
+  return /*CSS*/ `
+    ${htmlConfig}
+    ${nothingSelectable}
+    ${doNotDisplayListCss}
+    ${latexLibStyling}
+    ${setVarsBodyCss(args)}
+    ${bodyCss}
+    ${slideCss}
   `;
 };
