@@ -229,7 +229,7 @@ export const renderElement = function renderElement(
   const wrapper = (inner: string): string => /*HTML*/ `
     <slyde-component name="${element.name}" 
       path="${state.path.join('.')}" 
-      id="slide-${state.id}" 
+      id="slyde-component-container-${state.id}" 
       markup="${state.markup}"
       level="${state.level}"
     >
