@@ -138,6 +138,24 @@ export const handleMousePresses = function handleMousePresses(event: MouseEvent)
   if (event.button === rightClick) goToPreviousSlide();
 };
 
+/** Toggles between full screen and normal web page mode. */
+export const toggleFullScreen = function toggleFullScreen(): void {
+  if (document.fullscreenElement) {
+    document.exitFullscreen().catch((error: unknown) => {
+      Logger.error(error);
+    });
+  } else {
+    document.documentElement
+      .requestFullscreen()
+      .then(() => {
+        Logger.info('Received full screen permissions, press ESC to exit.');
+      })
+      .catch((error: unknown) => {
+        Logger.error(error);
+      });
+  }
+};
+
 /** Handles key presses on the document, and moves slides accordingly. */
 // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
 export const handleKeyPresses = function handleKeyPresses(event: KeyboardEvent): void {
@@ -155,6 +173,10 @@ export const handleKeyPresses = function handleKeyPresses(event: KeyboardEvent):
     case 'h':
     case 'ArrowLeft':
       goToPreviousSlide();
+      break;
+    case 'f':
+    case 'F11':
+      toggleFullScreen();
       break;
     default:
   }
@@ -245,6 +267,7 @@ export const setupScriptCode = /*JavaScript*/ `
   ${setupUrlHashCallBack.toString()}
   ${handleUrlHashChange.toString()}
   ${handleMousePresses.toString()}
+  ${toggleFullScreen.toString()}
   ${handleKeyPresses.toString()}
   ${handleScrollEvents.toString()}
   ${handleTouchEvents.toString()}
