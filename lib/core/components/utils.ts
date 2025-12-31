@@ -85,9 +85,8 @@ export const toDataURL = async function toDataURL(
   input: string,
   base: string = process.cwd()
 ): Promise<string> {
-  if (/^https?:\/\//iu.test(input)) {
-    return urlToDataURL(input);
-  }
+  if (/^data:/iu.test(input)) return input;
+  if (/^https?:\/\//iu.test(input)) return urlToDataURL(input);
 
   let resolvedPath; // eslint-disable-line @typescript-eslint/init-declarations
   if (path.isAbsolute(input)) resolvedPath = input;
