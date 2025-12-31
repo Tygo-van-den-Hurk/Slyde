@@ -1,3 +1,5 @@
+/* eslint-disable max-lines */
+
 import type { DeepReadonly } from '#lib/types';
 import { Logger } from '#lib/logger';
 
@@ -156,27 +158,66 @@ export const toggleFullScreen = function toggleFullScreen(): void {
   }
 };
 
+/** Gets the size of one `--unit` in pixels. */
+export const getOneUnitSizeInPixels = function getOneUnitSizeInPixels(): number {
+  const element = document.createElement('div');
+  element.style.position = 'absolute';
+  element.style.visibility = 'hidden';
+  element.style.height = 'var(--unit)';
+  document.body.appendChild(element);
+  const pixels = element.getBoundingClientRect().height;
+  document.body.removeChild(element);
+  return pixels;
+};
+
+interface scrollUsingUnitArgs {
+  readonly amount: number;
+  /** Wether to move down that many slides instead of units. */
+  readonly slides?: boolean;
+}
+
+/** Scrolls the window down by `amount * --unit` in pixels. */
+export const scrollUsingUnit = function scrollUsingUnit({
+  amount,
+  slides = false,
+}: scrollUsingUnitArgs): void {
+  let modifier = 1;
+  if (slides) {
+    const marginBetweenSlides = 1;
+    const value = getComputedStyle(document.body).getPropertyValue('--height').trim();
+    modifier = Number.parseFloat(value) + marginBetweenSlides;
+  }
+
+  const pixels = getOneUnitSizeInPixels() * amount * modifier;
+  Logger.debug(`Scrolling by ${pixels} pixels`);
+  if (!Number.isNaN(pixels)) document.body.scrollBy({ behavior: 'smooth', left: 0, top: pixels });
+};
+
 /** Handles key presses on the document, and moves slides accordingly. */
 // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
 export const handleKeyPresses = function handleKeyPresses(event: KeyboardEvent): void {
-  if (isPDF()) return;
-
   switch (event.key) {
     case 'Enter':
     case ' ':
     case 'd':
     case 'l':
     case 'ArrowRight':
-      goToNextSlide();
+      if (!isPDF()) goToNextSlide();
       break;
     case 'a':
     case 'h':
     case 'ArrowLeft':
-      goToPreviousSlide();
+      if (!isPDF()) goToPreviousSlide();
       break;
     case 'f':
     case 'F11':
       toggleFullScreen();
+      break;
+    case 'ArrowDown':
+      if (isPDF()) scrollUsingUnit({ amount: 1, slides: true });
+      break;
+    case 'ArrowUp':
+      if (isPDF()) scrollUsingUnit({ amount: -1, slides: true });
       break;
     default:
   }
@@ -268,6 +309,8 @@ export const setupScriptCode = /*JavaScript*/ `
   ${handleUrlHashChange.toString()}
   ${handleMousePresses.toString()}
   ${toggleFullScreen.toString()}
+  ${getOneUnitSizeInPixels.toString()}
+  ${scrollUsingUnit.toString()}
   ${handleKeyPresses.toString()}
   ${handleScrollEvents.toString()}
   ${handleTouchEvents.toString()}
