@@ -102,6 +102,18 @@ const nothingSelectable = /*CSS*/ `
 `;
 
 // eslint-disable-next-line no-inline-comments
+const noScrollBars = /*CSS*/ `
+  * {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  *::-webkit-scrollbar {
+    display: none;
+  }
+`;
+
+// eslint-disable-next-line no-inline-comments
 const doNotDisplayListCss = /*CSS*/ `
   head, style, script {
     display: none !important;
@@ -208,6 +220,7 @@ export const baseCSS = function baseCSS(args: SlydeHtmlDocumentCssProperties): s
   return /*CSS*/ `
     ${htmlConfig}
     ${nothingSelectable}
+    ${noScrollBars}
     ${doNotDisplayListCss}
     ${latexLibStyling}
     ${setVarsBodyCss(args)}
