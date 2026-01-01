@@ -2,7 +2,6 @@ import * as FileSystem from 'fs';
 import * as path from 'path';
 import * as url from 'url';
 import parseXML, {
-  ParsingError,
   type XmlParserDocumentChildNode,
   type XmlParserElementChildNode,
   type XmlParserElementNode,
@@ -85,7 +84,8 @@ export const parseInput = function parseInput(content: string): XmlParserResult 
     const cleaned = cleanAndMergeAdjacentTextNodes(result);
     return cleaned;
   } catch (error: unknown) {
-    if (error instanceof ParsingError)
+    // Because `ParsingError` from `xml-parser-xo` is undefined at runtime we have this:
+    if (error instanceof Error && 'cause' in error && typeof error.cause === 'string')
       throw new Error(`${error.message}: ${error.cause}`, { cause: error });
     throw new Error(`Could not parse input file.`, { cause: error });
   }
