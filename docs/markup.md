@@ -95,9 +95,7 @@ or use a [processing instruction](./processing-instructions.md):
 Or you can use an XML CDATA tag:
 
 ```XML
-<text><CDATA[[
-  **This text will NOT be bold**
-]]></text>
+<text><![CDATA[**This text will NOT be bold**]]></text>
 ```
 
 A CDATA tag Does not modify the text in any way what so ever. It preserves even whitespace if that is important to you.
