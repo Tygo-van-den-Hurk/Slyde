@@ -20,23 +20,26 @@ export class Image extends Component {
   public constructor(args: Component.ConstructorArguments) {
     super(args);
 
-    if (typeof args.attributes.source === 'string') {
-      this.source = args.attributes.source;
-    } else if (typeof args.attributes.src === 'string') {
-      this.source = args.attributes.src;
-    } else {
+    const source = Component.utils.extract({
+      aliases: ['source', 'src'],
+      record: args.attributes,
+    });
+    
+    if (typeof source !== 'string') {
       throw new Error(`${Image.name} at ${this.path} is missing attribute 'source'.`);
     }
 
-    if (typeof args.attributes.description === 'string') {
-      this.description = args.attributes.description;
-    } else if (typeof args.attributes.alt === 'string') {
-      this.description = args.attributes.alt;
-    } else {
+    const description = Component.utils.extract({
+      aliases: ['description', 'alt'],
+      record: args.attributes,
+    });
+
+    if (typeof description !== 'string') {
       Logger.warn(`${Image.name} at ${this.path} is missing attribute 'description'.`);
     }
 
-    this.description = args.attributes.description;
+    this.source = source;
+    this.description = description;
   }
 
   // eslint-disable-next-line jsdoc/require-jsdoc
