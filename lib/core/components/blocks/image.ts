@@ -24,7 +24,7 @@ export class Image extends Component {
       aliases: ['source', 'src'],
       record: args.attributes,
     });
-    
+
     if (typeof source !== 'string') {
       throw new Error(`${Image.name} at ${this.path} is missing attribute 'source'.`);
     }
