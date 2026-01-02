@@ -1,15 +1,22 @@
-import { describe, expect, test } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { Component } from '#lib/core/components/class';
 import { Image } from '#lib/core/components/blocks/image';
 
+const impl = async (src: string): Promise<string> => Promise.resolve(src);
+const spy = vi.spyOn(Component.utils, 'toDataURL').mockImplementation(impl);
+
 describe('class Image implements Component', () => {
+  beforeEach(() => {
+    spy.mockReset();
+  });
+
   test('Registered', () => {
     expect(Component.retrieve(Image.name)).toBe(Image);
   });
 
   const construct = {
     attributes: {
-      source: 'http://example.com/',
+      source: 'http://github.com/Tygo-van-den-Hurk.png',
     },
     focusMode: 'default' as const,
     id: '',
@@ -29,11 +36,13 @@ describe('class Image implements Component', () => {
   const children = (() => pattern) as () => string;
   const render = {} satisfies Component.RenderArguments;
 
-  test('renders without children', () => {
-    expect(() => new Image({ ...construct }).render({ ...render })).not.toThrow();
+  test('renders without children', async () => {
+    const image = new Image({ ...construct });
+    await expect(image.render({ ...render })).resolves.not.toThrow();
   });
 
-  test('does not render with children', () => {
-    expect(() => new Image({ ...construct }).render({ ...render, children })).toThrow();
+  test('does not render with children', async () => {
+    const image = new Image({ ...construct });
+    await expect(async () => image.render({ ...render, children })).rejects.toThrow();
   });
 });
