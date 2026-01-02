@@ -16,7 +16,7 @@ Here follows a list off all possible instructions:
 - [`engine`](#engine-concept): checks if the compiler uses the same version for slyde.
 - [`include`](#include-concept): include files in the final build.
 
-### Change Markup Renderer
+## Change Markup Renderer
 
 You can change the markup render to `XYZ` using:
 
@@ -36,7 +36,7 @@ For example, you can use it to turn off markup rendering:
 </text>
 ```
 
-### Engine
+## Engine
 
 Require a certain version for slyde to be. Works using semantic versioning. See the [semver NPM package](https://github.com/npm/node-semver) for their API. This allows you to assert a warning 
 
@@ -82,7 +82,7 @@ Include multiple sets of versions. Use `||` to combine.
 <?slyde engine="^2 <2.2 || > 2.3" ?>
 ```
 
-### Include (concept)
+## Include (concept)
 
 > [!NOTE]
 > For now this is just a concept, I am not sure if it will make it into the final version.
