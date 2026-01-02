@@ -61,6 +61,6 @@ export const useProcessingInstruction = function useProcessingInstruction(
     // Unknown procession instructions.
     default:
       Logger.warn(`Unknown processing instruction: ${instruction.name}="${instruction.value}"`);
-      return state
+      return state;
   }
 };
