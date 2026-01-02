@@ -1,9 +1,12 @@
 import { Globals, type RenderState } from '#lib/core/render/types';
 import { afterEach, describe, expect, test, vi } from 'vitest';
+import {
+  useEngineInstruction,
+  useProcessingInstruction,
+} from '#lib/core/render/processing-instructions';
 import { Logger } from '#lib/logger';
 import { SlydeMarkupRenderer } from '#lib/core/markup/languages/slyde';
 import type { XmlParserProcessingInstructionNode } from 'xml-parser-xo';
-import { useProcessingInstruction } from '#lib/core/render/processing-instructions';
 
 const warnSpy = vi.spyOn(Logger, 'warn').mockImplementation(() => {
   // We do nothing with any of the arguments...
@@ -21,6 +24,26 @@ const baseState: RenderState = {
   path: 'test path',
 } satisfies RenderState;
 
+describe('useEngineInstruction', () => {
+  afterEach(() => warnSpy.mockReset());
+
+  test('valid range and satisfies', () => {
+    const state = useEngineInstruction(baseState, { name: 'engine', value: '>=1.0.0' });
+    expect(state).toEqual(baseState);
+    expect(warnSpy).not.toHaveBeenCalled();
+  });
+
+  test('valid range but does not satisfy', () => {
+    useEngineInstruction(baseState, { name: 'engine', value: '<1.0.0' });
+    expect(warnSpy).toHaveBeenCalled();
+  });
+
+  test('invalid range', () => {
+    useEngineInstruction(baseState, { name: 'engine', value: 'not-a-range' });
+    expect(warnSpy).toHaveBeenCalled();
+  });
+});
+
 describe('useProcessingInstruction', () => {
   afterEach(() => warnSpy.mockReset());
 
@@ -30,9 +53,12 @@ describe('useProcessingInstruction', () => {
     expect(state.markup).toBe(instruction.value);
   });
 
+  test('engine instruction', () => {
+    const state = useProcessingInstruction(baseState, { name: 'engine', value: '>=1.0.0' });
+    expect(state).toEqual(baseState);
+  });
+
   test('unimplemented instructions', () => {
-    useProcessingInstruction(baseState, { name: 'engine', value: '>=1.0.0' });
-    expect(warnSpy).toHaveBeenCalled();
     useProcessingInstruction(baseState, { name: 'transition', value: 'something' });
     expect(warnSpy).toHaveBeenCalled();
     useProcessingInstruction(baseState, { name: 'include', value: 'something' });
