@@ -15,9 +15,7 @@ export class QuestionSlide extends Component {
   }
 
   // eslint-disable-next-line jsdoc/require-jsdoc
-  public render({
-    children,
-  }: Component.RenderArguments): ReturnType<Component.Interface['render']> {
+  public render({ children }: Component.RenderArguments): string {
     // eslint-disable-next-line no-inline-comments
     return /*HTML*/ `
       <div class="h-full w-full flex justify-center items-center">

@@ -2,10 +2,8 @@
  * The interface for any `MarkupRender`.
  */
 export interface MarkupRendererInterface {
-  /**
-   * Renders a string from the markup language into HTML
-   */
-  render: (input: string) => string;
+  /** Renders a string from the markup language into HTML */
+  render: (input: string) => Promise<string> | string;
 }
 
 /**

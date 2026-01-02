@@ -22,25 +22,21 @@ export class Quote extends Component {
     if (typeof args.attributes.by === 'string') {
       this.by = args.attributes.by;
     } else {
-      Logger.warn(`${Quote.name} at ${this.path.join('.')} is missing attribute "by".`);
+      Logger.warn(`${Quote.name} at ${this.path} is missing attribute "by".`);
       this.by = 'Unknown';
     }
 
     if (typeof args.attributes.by === 'string') {
       this.cite = args.attributes.cite;
     } else {
-      Logger.warn(`${Quote.name} at ${this.path.join('.')} is missing attribute "cite".`);
+      Logger.warn(`${Quote.name} at ${this.path} is missing attribute "cite".`);
     }
   }
 
   // eslint-disable-next-line jsdoc/require-jsdoc
-  public render({
-    children,
-  }: Component.RenderArguments): ReturnType<Component.Interface['render']> {
+  public render({ children }: Component.RenderArguments): string {
     if (!children) {
-      throw new Error(
-        `Expected ${Quote.name} at ${this.path.join('.')} to have children, but found none.`
-      );
+      throw new Error(`Expected ${Quote.name} at ${this.path} to have children, but found none.`);
     }
 
     let cite = '';

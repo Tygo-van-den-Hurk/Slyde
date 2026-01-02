@@ -25,7 +25,7 @@ export class Image extends Component {
     } else if (typeof args.attributes.src === 'string') {
       this.source = args.attributes.src;
     } else {
-      throw new Error(`${Image.name} at ${this.path.join('.')} is missing attribute 'source'.`);
+      throw new Error(`${Image.name} at ${this.path} is missing attribute 'source'.`);
     }
 
     if (typeof args.attributes.description === 'string') {
@@ -33,20 +33,18 @@ export class Image extends Component {
     } else if (typeof args.attributes.alt === 'string') {
       this.description = args.attributes.alt;
     } else {
-      Logger.warn(`${Image.name} at ${this.path.join('.')} is missing attribute 'description'.`);
+      Logger.warn(`${Image.name} at ${this.path} is missing attribute 'description'.`);
     }
 
     this.description = args.attributes.description;
   }
 
   // eslint-disable-next-line jsdoc/require-jsdoc
-  public render({
-    children,
-  }: Component.RenderArguments): ReturnType<Component.Interface['render']> {
+  public render({ children }: Component.RenderArguments): string {
     const description = this.description ?? '';
     const { source } = this;
 
-    if (children) throw new Error(`${Image.name} expected no children at ${this.path.join('.')}`);
+    if (children) throw new Error(`${Image.name} expected no children at ${this.path}`);
 
     // eslint-disable-next-line no-inline-comments
     return /*HTML*/ `<img src="${source}" alt="${description}">`;

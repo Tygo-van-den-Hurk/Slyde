@@ -34,7 +34,7 @@ abstract class Component implements ComponentInterface {
    * Creates a new `Component` from the arguments provided.
    */
   public constructor(args: ComponentConstructorArguments) {
-    Logger.debug(`constructing ${new.target.name} at ${args.path.join('.')}`);
+    Logger.debug(`constructing ${new.target.name} at ${args.path}`);
     this.attributes = args.attributes;
     this.focusMode = args.focusMode;
     this.level = args.level;
@@ -42,7 +42,7 @@ abstract class Component implements ComponentInterface {
     this.id = args.id;
     if (!this.canBeAtLevel(args.level)) {
       throw new Error(
-        `${Component.name} ${new.target.name} at ${this.path.join('.')} cannot be at level ${this.level}. ` +
+        `${Component.name} ${new.target.name} at ${this.path} cannot be at level ${this.level}. ` +
           `Only at levels: ${this.hierarchy().toString()}`
       );
     }

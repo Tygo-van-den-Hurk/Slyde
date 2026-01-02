@@ -50,7 +50,7 @@ export class Point extends Component {
     const result = symbolParser.safeParse(extracted);
     if (result.error) {
       throw new Error(
-        `Expected property by the names of "${aliases.join('", "')}" of ${Point.name} at ${this.path.join('.')} to ` +
+        `Expected property by the names of "${aliases.join('", "')}" of ${Point.name} at ${this.path} to ` +
           `be one of "${symbolOptions.join('", "')}", but found: ${args.attributes.type}`
       );
     }
@@ -59,13 +59,9 @@ export class Point extends Component {
   }
 
   // eslint-disable-next-line jsdoc/require-jsdoc
-  public render({
-    children,
-  }: Component.RenderArguments): ReturnType<Component.Interface['render']> {
+  public render({ children }: Component.RenderArguments): string {
     if (!children) {
-      throw new Error(
-        `Expected ${Point.name} at ${this.path.join('.')} to have children, but found none.`
-      );
+      throw new Error(`Expected ${Point.name} at ${this.path} to have children, but found none.`);
     }
 
     // eslint-disable-next-line no-inline-comments

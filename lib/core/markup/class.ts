@@ -3,7 +3,7 @@ import { Registry } from '#lib/core/registry';
 
 /** The `MarkupRenderer` base class before the registry is injected. */
 abstract class MarkupRenderer implements MarkupRendererInterface {
-  public abstract render(input: string): string;
+  public abstract render(input: string): ReturnType<MarkupRendererInterface['render']>;
 }
 
 /**

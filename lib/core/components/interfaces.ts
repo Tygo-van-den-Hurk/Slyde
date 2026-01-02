@@ -36,9 +36,9 @@ export interface ComponentConstructorArguments {
   readonly attributes: Readonly<Record<string, string | undefined>>;
 
   /**
-   * The path at which this element is located.
+   * The Xpath at which this element is located.
    */
-  readonly path: readonly string[];
+  readonly path: string;
 
   /**
    * How deep the component is in the tree. For example if we look at the following presentation:
@@ -85,7 +85,7 @@ export interface ComponentInterface extends ComponentConstructorArguments {
   /**
    * Render this component to HTML.
    */
-  readonly render: (argo0: Readonly<ComponentRenderArguments>) => string;
+  readonly render: (argo0: Readonly<ComponentRenderArguments>) => Promise<string> | string;
 
   /**
    * The levels at which this component is allowed to be used. End with a plus to allow any level deeper then the last
@@ -97,7 +97,8 @@ export interface ComponentInterface extends ComponentConstructorArguments {
     | '*';
 
   /**
-   * Whether or not an instance of `Component` can be at a level `n`.
+   * Whether or not an instance of `Component` can be at a level `n`. Uses the `hierarch` function to determine what
+   * levels are and are not allowed.
    */
   readonly canBeAtLevel: (level: number) => boolean;
 }

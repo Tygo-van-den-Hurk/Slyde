@@ -11,13 +11,9 @@ export class Text extends Component {
   }
 
   // eslint-disable-next-line jsdoc/require-jsdoc
-  public render({
-    children,
-  }: Component.RenderArguments): ReturnType<Component.Interface['render']> {
+  public render({ children }: Component.RenderArguments): string {
     if (!children) {
-      throw new Error(
-        `${Text.name} at ${this.path.join('.')} expected to have children, but found none.`
-      );
+      throw new Error(`${Text.name} at ${this.path} expected to have children, but found none.`);
     }
 
     // eslint-disable-next-line no-inline-comments

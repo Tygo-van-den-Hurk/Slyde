@@ -105,7 +105,45 @@ export const toDataURL = async function toDataURL(
   );
 };
 
-/** Extracts a key from a record even if it has aliases, or returns a fallback. */
+/**
+ * Extracts a key from a record of attributes then applies a transform, or returns a fallback if none of the aliases
+ * were present in the record. Allows for easy extraction of properties for components.
+ *
+ * ```TypeScript
+ * export class Image extends Component {
+ *   public readonly source: string;
+ *   public constructor(args) {
+ *     super(args);
+ *     this.source = Component.utils.extract({
+ *       aliases: ["source", "src"],
+ *       record: this.attributes,
+ *     });
+ *   }
+ * }
+ * ```
+ */
+export function extract<T>({
+  record,
+  aliases,
+  fallback,
+  transform,
+}: {
+  readonly record: Readonly<Record<string, string | undefined>>;
+  readonly aliases: readonly string[];
+  readonly fallback: T;
+  readonly transform: (value: string) => T;
+}): T;
+
+export function extract<T>({
+  record,
+  aliases,
+  transform,
+}: {
+  readonly record: Readonly<Record<string, string | undefined>>;
+  readonly aliases: readonly string[];
+  readonly transform: (value: string) => T;
+}): T | undefined;
+
 export function extract({
   record,
   aliases,
@@ -116,7 +154,6 @@ export function extract({
   readonly fallback: string;
 }): string;
 
-/** Extracts a key from a record even if it has aliases, or returns a fallback. */
 export function extract({
   record,
   aliases,
@@ -125,21 +162,22 @@ export function extract({
   readonly aliases: readonly string[];
 }): string | undefined;
 
-/** Extracts a key from a record even if it has aliases, or returns a fallback. */
-export function extract({
+export function extract<T>({
   record,
   aliases,
   fallback,
+  transform,
 }: {
   readonly record: Readonly<Record<string, string | undefined>>;
   readonly aliases: readonly string[];
-  readonly fallback?: string;
-}): string | undefined {
+  readonly fallback?: T | string;
+  readonly transform?: (value: string) => T;
+}): T | string | undefined {
   for (const alias of aliases) {
-    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-    if (record[alias]) {
-      return record[alias];
-    }
+    if (typeof record[alias] !== 'string') continue;
+    if (transform) return transform(record[alias]);
+    return record[alias];
   }
+
   return fallback;
 }

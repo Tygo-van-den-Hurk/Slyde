@@ -24,9 +24,7 @@ export class TitleSlide extends Component {
   }
 
   // eslint-disable-next-line jsdoc/require-jsdoc
-  public render({
-    children,
-  }: Component.RenderArguments): ReturnType<Component.Interface['render']> {
+  public render({ children }: Component.RenderArguments): string {
     let authors = '';
 
     if (this.authors) authors = `<p>${this.authors.join('<br>')}</p>`;

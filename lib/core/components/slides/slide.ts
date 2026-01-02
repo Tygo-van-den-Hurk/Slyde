@@ -18,15 +18,13 @@ export class Slide extends Component {
     if (Number.isNaN(this.padding)) {
       throw new Error(
         `Expected padding to be a integer, but found ${args.attributes.padding} ` +
-          `at ${this.path.join('.')}.`
+          `at ${this.path}.`
       );
     }
   }
 
   // eslint-disable-next-line jsdoc/require-jsdoc
-  public render({
-    children,
-  }: Component.RenderArguments): ReturnType<Component.Interface['render']> {
+  public render({ children }: Component.RenderArguments): string {
     if (typeof this.title === 'string') {
       // eslint-disable-next-line no-inline-comments
       return /*HTML*/ `
