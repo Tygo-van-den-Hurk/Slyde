@@ -32,17 +32,50 @@ You can change the markup render to `XYZ` using:
 <?slyde markup="XYZ"?>
 ```
 
-## Engine (concept)
+## Engine
 
-> [!NOTE]
-> For now this is just a concept, I am not sure if it will make it into the final version.
+Require a certain version for slyde to be. Works using semantic versioning. See the [semver NPM package](https://github.com/npm/node-semver) for their API. This allows you to assert a warning 
 
-Require a certain version for slyde to be. Works using semantic versioning.
+Include everything that does not increment the first non-zero portion of semver. Use the caret (aka hat) symbol: `^`.
 
+```XML
+<?slyde engine="^2.2.1" ?>
+<?slyde engine="^0.1.0" ?>
+<?slyde engine="^0.0.3" ?>
 ```
-<?slyde engine="v1"?>
-<?slyde engine="v1.2"?>
-<?slyde engine="v1.2.3"?>
+
+Include everything greater than a particular version in the same minor range. Use the tilde symbol: `~`.
+
+```XML
+<?slyde engine="^~2.2.0" ?>
+<?slyde engine="^~2.2.0" ?>
+<?slyde engine="^~2.2.0" ?>
+```
+
+Specify a range of stable versions. Use `>`, `<`, `=`, `>=` or `<=` for comparisons, or `-` to specify an inclusive range.
+
+```XML
+<?slyde engine=">2.1" ?>
+<?slyde engine="1.0.0 - 1.2.0" ?>
+```
+    
+Include pre-release versions like alpha and beta. Use the pre-release tag
+
+```XML
+<?slyde engine="1.0.0-rc.1" ?>
+```
+
+Specify a range of pre-release versions. Use comparisons like `>` with a pre-release tag.
+
+```XML
+<?slyde engine=">1.0.0-alpha" ?>
+<?slyde engine=">=1.0.0-rc.0 <1.0.1" ?>
+```
+
+Include multiple sets of versions. Use `||` to combine.
+
+```XML
+<?slyde engine="^2 <2.2 || > 2.3" ?>
 ```
 
 ## Include (concept)
