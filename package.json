@@ -30,6 +30,7 @@
     },
     "type": "module",
     "imports": {
+        "#browser/*": "./dist/browser/*.js",
         "#src/*": "./dist/src/*.js",
         "#package": "./package.json",
         "#lib": "./dist/lib/index.js",
@@ -43,12 +44,12 @@
         "test:coverage": "vitest --dir test run --coverage --silent passed-only",
         "coverage": "npm run --silent test:coverage --",
         "lint": "npm run --silent lint:check --",
-        "lint:check": "eslint '{src,lib,test}/**/*.{js,ts}' --cache --cache-location ./.cache/eslint/",
-        "lint:write": "eslint '{src,lib,test}/**/*.{js,ts}' --cache --cache-location ./.cache/eslint/ --fix",
+        "lint:check": "eslint '{browser,src,lib,test}/**/*.{js,ts}' --cache --cache-location ./.cache/eslint/",
+        "lint:write": "eslint '{browser,src,lib,test}/**/*.{js,ts}' --cache --cache-location ./.cache/eslint/ --fix",
         "lint:fix": "npm run --silent lint:write --",
         "format": "npm run --silent format:write --",
-        "format:check": "prettier '{src,lib,test}/**/*.{js,ts}' --check",
-        "format:write": "prettier '{src,lib,test}/**/*.{js,ts}' --write",
+        "format:check": "prettier '{browser,src,lib,test}/**/*.{js,ts}' --check",
+        "format:write": "prettier '{browser,src,lib,test}/**/*.{js,ts}' --write",
         "format:fix": "npm run --silent format:write --"
     },
     "dependencies": {

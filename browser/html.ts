@@ -5,8 +5,8 @@ import {
   baseCSS,
   baseTailwind,
   tailwindConfig,
-} from '#lib/core/browser/css';
-import { setupScriptCode } from '#lib/core/browser/page-logic.browser';
+} from '#browser/css';
+import { setupScriptCode } from '#browser/page-logic.browser';
 
 /** The properties a  */
 export interface SlydeHtmlDocumentHtmlProperties extends SlydeHtmlDocumentCssProperties {

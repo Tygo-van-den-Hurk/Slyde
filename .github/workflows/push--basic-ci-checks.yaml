@@ -6,11 +6,11 @@ on:
   workflow_dispatch:
   push:
     branches: [main, master, release, development]
-    paths: [test/**, lib/**, src/**, package*, tsconfig*, vitest*, eslint*, prettier* ]
+    paths: [browser/**, test/**, lib/**, src/**, package*, tsconfig*, vitest*, eslint*, prettier* ]
   pull_request:
     branches: [main, master, release, development]
     types: [opened, synchronize, reopened]
-    paths: [test/**, lib/**, src/**, package*, tsconfig*, vitest*, eslint*, prettier* ]
+    paths: [browser/**, test/**, lib/**, src/**, package*, tsconfig*, vitest*, eslint*, prettier* ]
 
 jobs:
   basic-ci-matrix:

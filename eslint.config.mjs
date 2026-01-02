@@ -16,7 +16,7 @@ export default defineConfig(
   eslint.configs.all,
   tseslint.configs.all,
   {
-    files: [ 'src/**/*.ts', 'lib/**/*.ts'],
+    files: [ 'browser/**/*.ts', 'src/**/*.ts', 'lib/**/*.ts'],
     extends: [
       importPlugin.flatConfigs.recommended, 
       importPlugin.flatConfigs.typescript
@@ -46,7 +46,7 @@ export default defineConfig(
   },
   jsdoc({
     config: "flat/recommended",
-    files: [ 'src/**/*.ts', 'lib/**/*.ts'],
+    files: [ 'browser/**/*.ts', 'src/**/*.ts', 'lib/**/*.ts'],
     rules: {
       "jsdoc/require-description": "error",
       "jsdoc/require-param": "off",

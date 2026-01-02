@@ -4,9 +4,13 @@
     "lib": ["ES2022", "dom"],
   },
   "include": [
-    "src/**/*.browser.ts",
-    "lib/**/*.browser.ts",
-    "test/**/*.browser.ts",
-    "test/**/*.browser.test.ts",
-],
+    "browser/**",
+    "test/browser/**",
+  ],
+  "exclude": [
+    "src/**/*.ts",
+    "lib/**/*.ts",
+    "test/src/**/*.ts",
+    "test/lib/**/*.ts",
+  ],
 }

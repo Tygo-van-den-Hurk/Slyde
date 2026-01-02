@@ -6,12 +6,11 @@
   "include": [
     "src/**/*.ts",
     "lib/**/*.ts",
-    "test/**/*.ts",
+    "test/src/**/*.ts",
+    "test/lib/**/*.ts",
   ],
   "exclude": [
-    "src/**/*.browser.ts",
-    "lib/**/*.browser.ts",
-    "test/**/*.browser.ts",
-    "test/**/*.browser.test.ts",
+    "browser/**",
+    "test/browser/**",
   ],
 }

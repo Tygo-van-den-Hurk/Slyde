@@ -11,7 +11,7 @@ import type {
 import { createComponentInstance, getMarkupRenderer, wrapper } from '#lib/core/render/utils';
 import { Component } from '#lib/core/components/class';
 import { Logger } from '#lib/logger';
-import { htmlDocument } from '#lib/core/browser/index';
+import { htmlDocument } from '#browser/index';
 import { useProcessingInstruction } from '#lib/core/render/processing-instructions';
 
 /** Handles an XML DocType in the document, by checking if the document mentions the compiler. */

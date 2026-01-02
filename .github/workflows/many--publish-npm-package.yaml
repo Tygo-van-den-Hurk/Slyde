@@ -8,6 +8,7 @@ on:
       - test/**
       - lib/**
       - src/**
+      - browser/**
       - '*package*'
       - '*tsconfig*'
       - '*vitest*'
