@@ -2,21 +2,13 @@
 
 Processing instructions are a special way to tell the compiler things. They do not show up in your presentation, or notes. They can change the way the compiler works, and what state you are in. 
 
-## Examples
-
-An example is the processing instructions to change the [markup renderer](markup.md) to something else from here on out for all next elements and their descendants.
+In XML processing instructions are given using the following format:
 
 ```XML
-<text>
-  **This text will be bold**
-</text>
-<?slyde markup="plain"?>
-<text>
-  **This text will NOT be bold**
-</text>
+<?target ... ?>
+So, we use it as follows:
+<?slyde ... ?>
 ```
-
-## Possible Instructions
 
 Here follows a list off all possible instructions:
 
@@ -32,7 +24,19 @@ You can change the markup render to `XYZ` using:
 <?slyde markup="XYZ"?>
 ```
 
-## Engine
+For example, you can use it to turn off markup rendering:
+
+```XML
+<text>
+  **This text will be bold**
+</text>
+<?slyde markup="plain"?>
+<text>
+  **This text will NOT be bold**
+</text>
+```
+
+### Engine
 
 Require a certain version for slyde to be. Works using semantic versioning. See the [semver NPM package](https://github.com/npm/node-semver) for their API. This allows you to assert a warning 
 
@@ -78,7 +82,7 @@ Include multiple sets of versions. Use `||` to combine.
 <?slyde engine="^2 <2.2 || > 2.3" ?>
 ```
 
-## Include (concept)
+### Include (concept)
 
 > [!NOTE]
 > For now this is just a concept, I am not sure if it will make it into the final version.
