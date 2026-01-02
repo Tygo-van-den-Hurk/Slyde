@@ -40,9 +40,9 @@ export class Image extends Component {
   }
 
   // eslint-disable-next-line jsdoc/require-jsdoc
-  public render({ children }: Component.RenderArguments): string {
+  public async render({ children }: Component.RenderArguments): Promise<string> {
     const description = this.description ?? '';
-    const { source } = this;
+    const source = await Component.utils.toDataURL(this.source);
 
     if (children) throw new Error(`${Image.name} expected no children at ${this.path}`);
 
