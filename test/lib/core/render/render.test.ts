@@ -82,7 +82,7 @@ const document = /*XML*/ `
     <point>It is super **fast** and __easy__ to make slides</point>
     <point>The animations are ^^gorgeous^^!</point>
     <point>Recipient //only// needs a browser to open it</point>
-    <point>You can even use latex: $$\forall_i[ i \\in \\mathbb{N} : i + 1 \\gt i ]$$</point>
+    <point>You can even use latex: $$\\forall_i[ i \\in \\mathbb{N} : i + 1 \\gt i ]$$</point>
     <point><![CDATA[${SPECIFIC}]]></point>
   </slide>
 </presentation>` as const;
