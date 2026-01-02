@@ -11,26 +11,27 @@ describe('class Quote implements Component', () => {
     attributes: {},
     focusMode: 'default' as const,
     id: '',
-    level: 4,
-    path: ['root'],
-  };
+    level: Component.level.block,
+    path: '//',
+  } satisfies Component.ConstructorArguments;
 
   test('Is creatable', () => {
     expect(() => new Quote({ ...construct })).not.toThrow();
   });
 
-  const render = {
-    children: (): string => '',
-  };
+  const pattern = '<VERY-SPECIFIC-PATTERN>' as const;
+  const children = (() => pattern) as () => string;
+  const render = {} satisfies Component.RenderArguments;
 
   test('renders with children', () => {
-    expect(() => new Quote({ ...construct }).render({ ...render })).not.toThrow();
+    expect(() => new Quote({ ...construct }).render({ ...render, children })).not.toThrow();
   });
 
   test('does not render without children', () => {
-    expect(() =>
-      // eslint-disable-next-line no-undefined
-      new Quote({ ...construct }).render({ ...render, children: undefined })
-    ).toThrow();
+    expect(() => new Quote({ ...construct }).render({ ...render })).toThrow();
+  });
+
+  test('uses children within somewhere', () => {
+    expect(new Quote({ ...construct }).render({ ...render, children })).toContain(pattern);
   });
 });

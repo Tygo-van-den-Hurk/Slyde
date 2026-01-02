@@ -11,44 +11,27 @@ describe('class Presentation implements Component', () => {
     attributes: {},
     focusMode: 'default' as const,
     id: '',
-    level: 0,
-    path: ['root'],
-  };
+    level: Component.level.presentation,
+    path: '//',
+  } satisfies Component.ConstructorArguments;
 
   test('Is creatable', () => {
     expect(() => new Presentation({ ...construct })).not.toThrow();
   });
 
-  const render = {
-    children: (): string => '',
-  };
-
-  test('renders author if present', () => {
-    const author = 'Tygo van den Hurk';
-    const attributes = { author };
-    const slide = new Presentation({ ...construct, attributes });
-    expect(slide.render({ ...render })).toContain(author);
-  });
-
-  test('renders all authors if present', () => {
-    const author1 = 'Tygo van den Hurk';
-    const author2 = 'John Doe';
-    const authors = `${author1}, ${author2}`;
-    const attributes = { authors };
-    const slide = new Presentation({ ...construct, attributes });
-    const result = slide.render({ ...render });
-    expect(result).toContain(author1);
-    expect(result).toContain(author2);
-  });
+  const pattern = '<VERY-SPECIFIC-PATTERN>' as const;
+  const children = (() => pattern) as () => string;
+  const render = {} satisfies Component.RenderArguments;
 
   test('renders with children', () => {
-    expect(() => new Presentation({ ...construct }).render({ ...render })).not.toThrow();
+    expect(() => new Presentation({ ...construct }).render({ ...render, children })).not.toThrow();
   });
 
-  test('renders without children', () => {
-    expect(() =>
-      // eslint-disable-next-line no-undefined
-      new Presentation({ ...construct }).render({ ...render, children: undefined })
-    ).toThrow();
+  test('does not render without children', () => {
+    expect(() => new Presentation({ ...construct }).render({ ...render })).toThrow();
+  });
+
+  test('uses children within somewhere', () => {
+    expect(new Presentation({ ...construct }).render({ ...render, children })).toContain(pattern);
   });
 });

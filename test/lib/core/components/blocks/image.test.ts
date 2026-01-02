@@ -13,9 +13,9 @@ describe('class Image implements Component', () => {
     },
     focusMode: 'default' as const,
     id: '',
-    level: 4,
-    path: ['root'],
-  };
+    level: Component.level.block,
+    path: '//',
+  } satisfies Component.ConstructorArguments;
 
   test('Is creatable with src', () => {
     expect(() => new Image({ ...construct })).not.toThrow();
@@ -25,18 +25,15 @@ describe('class Image implements Component', () => {
     expect(() => new Image({ ...construct, attributes: {} })).toThrow();
   });
 
-  const render = {
-    children: (): string => '',
-  };
+  const pattern = '<VERY-SPECIFIC-PATTERN>' as const;
+  const children = (() => pattern) as () => string;
+  const render = {} satisfies Component.RenderArguments;
 
   test('renders without children', () => {
-    expect(() =>
-      // eslint-disable-next-line no-undefined
-      new Image({ ...construct }).render({ ...render, children: undefined })
-    ).not.toThrow();
+    expect(() => new Image({ ...construct }).render({ ...render })).not.toThrow();
   });
 
   test('does not render with children', () => {
-    expect(() => new Image({ ...construct }).render({ ...render })).toThrow();
+    expect(() => new Image({ ...construct }).render({ ...render, children })).toThrow();
   });
 });

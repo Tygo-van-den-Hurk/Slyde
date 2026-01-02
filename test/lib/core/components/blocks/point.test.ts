@@ -11,9 +11,9 @@ describe('class Point implements Component', () => {
     attributes: {},
     focusMode: 'default' as const,
     id: '',
-    level: 4,
-    path: ['root'],
-  };
+    level: Component.level.block,
+    path: '//',
+  } satisfies Component.ConstructorArguments;
 
   test('Is creatable', () => {
     expect(() => new Point({ ...construct })).not.toThrow();
@@ -23,18 +23,15 @@ describe('class Point implements Component', () => {
     expect(() => new Point({ ...construct, attributes: { type: 'GAR8AG3!' } })).toThrow();
   });
 
-  const render = {
-    children: (): string => '',
-  };
+  const pattern = '<VERY-SPECIFIC-PATTERN>' as const;
+  const children = (() => pattern) as () => string;
+  const render = {} satisfies Component.RenderArguments;
 
   test('renders with children', () => {
-    expect(() => new Point({ ...construct }).render({ ...render })).not.toThrow();
+    expect(() => new Point({ ...construct }).render({ ...render, children })).not.toThrow();
   });
 
-  test('does not render without children', () => {
-    expect(() =>
-      // eslint-disable-next-line no-undefined
-      new Point({ ...construct }).render({ ...render, children: undefined })
-    ).toThrow();
+  test('uses children within somewhere', () => {
+    expect(new Point({ ...construct }).render({ ...render, children })).toContain(pattern);
   });
 });

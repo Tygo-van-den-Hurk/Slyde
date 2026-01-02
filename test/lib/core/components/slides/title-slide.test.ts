@@ -12,16 +12,16 @@ describe('class TitleSlide implements Component', () => {
     focusMode: 'default' as const,
     id: '',
     level: 1,
-    path: ['root'],
-  };
+    path: '//',
+  } satisfies Component.ConstructorArguments;
 
   test('Is creatable', () => {
     expect(() => new TitleSlide({ ...construct })).not.toThrow();
   });
 
-  const render = {
-    children: (): string => '',
-  };
+  const pattern = '<VERY-SPECIFIC-PATTERN>' as const;
+  const children = (() => pattern) as () => string;
+  const render = {} satisfies Component.RenderArguments;
 
   test('renders author if present', () => {
     const author = 'Tygo van den Hurk';
@@ -42,13 +42,14 @@ describe('class TitleSlide implements Component', () => {
   });
 
   test('renders with children', () => {
-    expect(() => new TitleSlide({ ...construct }).render({ ...render })).not.toThrow();
+    expect(() => new TitleSlide({ ...construct }).render({ ...render, children })).not.toThrow();
   });
 
   test('renders without children', () => {
-    expect(() =>
-      // eslint-disable-next-line no-undefined
-      new TitleSlide({ ...construct }).render({ ...render, children: undefined })
-    ).not.toThrow();
+    expect(() => new TitleSlide({ ...construct }).render({ ...render })).not.toThrow();
+  });
+
+  test('uses children within somewhere', () => {
+    expect(new TitleSlide({ ...construct }).render({ ...render, children })).toContain(pattern);
   });
 });

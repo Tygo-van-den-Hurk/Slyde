@@ -12,25 +12,26 @@ describe('class Slide implements Component', () => {
     focusMode: 'default' as const,
     id: '',
     level: 1,
-    path: ['root'],
-  };
+    path: '//',
+  } satisfies Component.ConstructorArguments;
 
   test('Is creatable', () => {
     expect(() => new Slide({ ...construct })).not.toThrow();
   });
 
-  const render = {
-    children: (): string => '',
-  };
+  const pattern = '<VERY-SPECIFIC-PATTERN>' as const;
+  const children = (() => pattern) as () => string;
+  const render = {} satisfies Component.RenderArguments;
 
   test('renders with children', () => {
-    expect(() => new Slide({ ...construct }).render({ ...render })).not.toThrow();
+    expect(() => new Slide({ ...construct }).render({ ...render, children })).not.toThrow();
   });
 
   test('renders without children', () => {
-    expect(() =>
-      // eslint-disable-next-line no-undefined
-      new Slide({ ...construct }).render({ ...render, children: undefined })
-    ).not.toThrow();
+    expect(() => new Slide({ ...construct }).render({ ...render })).not.toThrow();
+  });
+
+  test('uses children within somewhere', () => {
+    expect(new Slide({ ...construct }).render({ ...render, children })).toContain(pattern);
   });
 });
