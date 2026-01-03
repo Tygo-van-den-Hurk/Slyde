@@ -2,14 +2,14 @@ import * as zod from 'zod';
 import { Component } from '#lib/core/components/class';
 
 const symbolOptions = [
-  'circle',
-  'dash',
-  'star',
   'arrow',
-  'square',
-  'diamond',
   'check',
+  'circle',
   'cross',
+  'dash',
+  'diamond',
+  'square',
+  'star',
 ] as const;
 
 const symbolParser = zod.enum(symbolOptions);
@@ -28,35 +28,28 @@ const symbolMap: Record<Symbol, string> = {
 };
 
 const defaultSymbol = 'dash' as Symbol;
+const aliases = ['symbol', 'type'] as readonly string[];
 
 /**
- * A component that just shows bullet point.
+ * A component that just shows bullet point. The symbol in front of the component is customisable.
  */
-@Component.register.using({ plugin: false })
+@Component.register.using({ aliases: ['pnt'], plugin: false })
 export class Point extends Component {
-  public readonly symbol: zod.infer<typeof symbolParser>;
-
-  // eslint-disable-next-line jsdoc/require-jsdoc
-  public constructor(args: Component.ConstructorArguments) {
-    super(args);
-
-    const aliases = ['symbol', 'type'] as readonly string[];
-    const extracted = Component.utils.extract({
-      aliases,
-      fallback: defaultSymbol,
-      record: args.attributes,
-    });
-
-    const result = symbolParser.safeParse(extracted);
-    if (result.error) {
+  /** The symbol to put in front of the "text". */
+  readonly #symbol: zod.infer<typeof symbolParser> = Component.utils.extract({
+    aliases,
+    context: this,
+    fallback: defaultSymbol,
+    // eslint-disable-next-line no-restricted-syntax
+    transform: (value) => {
+      const result = symbolParser.safeParse(value);
+      if (result.success) return result.data;
       throw new Error(
-        `Expected property by the names of "${aliases.join('", "')}" of ${Point.name} at ${this.path} to ` +
-          `be one of "${symbolOptions.join('", "')}", but found: ${args.attributes.type}`
+        `${Component.name} ${Point.name} at ${this.path} expected attribute "${aliases.join('" or "')}" ` +
+          `be one of "${symbolOptions.join('", "')}", but found: ${value}`
       );
-    }
-
-    this.symbol = result.data;
-  }
+    },
+  });
 
   // eslint-disable-next-line jsdoc/require-jsdoc
   public render({ children }: Component.RenderArguments): string {
@@ -66,7 +59,7 @@ export class Point extends Component {
 
     // eslint-disable-next-line no-inline-comments
     return /*HTML*/ `
-      <div class="pt-1 block before:content-['${symbolMap[this.symbol]}'] before:mr-2 before:text-black">
+      <div class="pt-1 block before:content-['${symbolMap[this.#symbol]}'] before:mr-2 before:text-black">
         ${children()}
       </div>
     `;

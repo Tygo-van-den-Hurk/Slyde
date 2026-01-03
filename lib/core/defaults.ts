@@ -20,10 +20,10 @@ export const foreground = '#000000' as const;
 export const primary = '#3B82F6' as const;
 
 /** The default secondary color of a presentation property for a slyde presentation. */
-export const secondary = 'F59E0B' as const;
+export const secondary = '#F59E0B' as const;
 
 /** The default colors of a presentation property for a slyde presentation. */
-export const colors = { background, foreground, primary, secondary };
+export const colors = { background, foreground, primary, secondary } as const;
 
 /** The default size of a presentation property for a slyde presentation. */
 export const size = { height: 45, width: 80 } as const;

@@ -83,6 +83,12 @@ export interface ComponentRenderArguments {
  */
 export interface ComponentInterface extends ComponentConstructorArguments {
   /**
+   * The name of the `Component` class. For example when constructing: `<presentation />` the name property
+   * will be `Presentation`. It will match the name the class itself has.
+   */
+  readonly name: string;
+
+  /**
    * Render this component to HTML.
    */
   readonly render: (argo0: Readonly<ComponentRenderArguments>) => Promise<string> | string;

@@ -1,4 +1,4 @@
-import * as componentUtils from '#lib/core/components/utils';
+import * as componentUtils from '#lib/core/components/utils/index';
 import type {
   ComponentConstructorArguments,
   ComponentInterface,
@@ -22,8 +22,9 @@ abstract class Component implements ComponentInterface {
 
   /** Utils related to components and their workings. */
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  public static readonly utils = { ...componentUtils };
+  public static readonly utils = Object.freeze({ ...componentUtils });
 
+  public readonly name;
   public readonly attributes;
   public readonly focusMode;
   public readonly level;
@@ -34,6 +35,7 @@ abstract class Component implements ComponentInterface {
    * Creates a new `Component` from the arguments provided.
    */
   public constructor(args: ComponentConstructorArguments) {
+    this.name = new.target.name;
     Logger.debug(`constructing ${new.target.name} at ${args.path}`);
     this.attributes = args.attributes;
     this.focusMode = args.focusMode;
@@ -49,7 +51,7 @@ abstract class Component implements ComponentInterface {
   }
 
   public canBeAtLevel(level: number): ReturnType<ComponentInterface['canBeAtLevel']> {
-    const hierarchy = this.hierarchy();
+    const hierarchy = (this as Partial<Pick<this, 'hierarchy'>>).hierarchy?.() ?? '*';
     if (hierarchy === '*') return true;
     if (hierarchy.includes(level)) return true;
 

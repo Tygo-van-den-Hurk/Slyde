@@ -42,8 +42,9 @@ export const mimeMap: Record<string, string | undefined> = Object.freeze({
  * Converts an (file) extension into a mime type.
  */
 export const toMime = function toMime(extension: string): string {
+  const key = extension.toLowerCase();
   // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-  if (mimeMap[extension]) return mimeMap[extension];
+  if (mimeMap[key]) return mimeMap[key];
   throw new Error(`Unknown extension: ${extension}. Could not convert to a mime type.`);
 };
 
@@ -104,80 +105,3 @@ export const toDataURL = async function toDataURL(
     `Expected either a valid URL or an existing file path, but found neither: ${input} (resolved as: ${resolvedPath})`
   );
 };
-
-/**
- * Extracts a key from a record of attributes then applies a transform, or returns a fallback if none of the aliases
- * were present in the record. Allows for easy extraction of properties for components.
- *
- * ```TypeScript
- * export class Image extends Component {
- *   public readonly source: string;
- *   public constructor(args) {
- *     super(args);
- *     this.source = Component.utils.extract({
- *       aliases: ["source", "src"],
- *       record: this.attributes,
- *     });
- *   }
- * }
- * ```
- */
-export function extract<T>({
-  record,
-  aliases,
-  fallback,
-  transform,
-}: {
-  readonly record: Readonly<Record<string, string | undefined>>;
-  readonly aliases: readonly string[];
-  readonly fallback: T;
-  readonly transform: (value: string) => T;
-}): T;
-
-export function extract<T>({
-  record,
-  aliases,
-  transform,
-}: {
-  readonly record: Readonly<Record<string, string | undefined>>;
-  readonly aliases: readonly string[];
-  readonly transform: (value: string) => T;
-}): T | undefined;
-
-export function extract({
-  record,
-  aliases,
-  fallback,
-}: {
-  readonly record: Readonly<Record<string, string | undefined>>;
-  readonly aliases: readonly string[];
-  readonly fallback: string;
-}): string;
-
-export function extract({
-  record,
-  aliases,
-}: {
-  readonly record: Readonly<Record<string, string | undefined>>;
-  readonly aliases: readonly string[];
-}): string | undefined;
-
-export function extract<T>({
-  record,
-  aliases,
-  fallback,
-  transform,
-}: {
-  readonly record: Readonly<Record<string, string | undefined>>;
-  readonly aliases: readonly string[];
-  readonly fallback?: T | string;
-  readonly transform?: (value: string) => T;
-}): T | string | undefined {
-  for (const alias of aliases) {
-    if (typeof record[alias] !== 'string') continue;
-    if (transform) return transform(record[alias]);
-    return record[alias];
-  }
-
-  return fallback;
-}

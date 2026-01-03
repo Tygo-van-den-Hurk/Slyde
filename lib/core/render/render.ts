@@ -1,4 +1,4 @@
-import * as defaults from '#lib/core/render/defaults';
+import * as defaults from '#lib/core/defaults';
 import { Globals, type RenderState } from '#lib/core/render/types';
 import type {
   XmlParserCommentNode,
@@ -133,60 +133,72 @@ export const renderNode = async function renderNode(
 /** Renders an XML document from the parser result. */
 // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types, max-lines-per-function
 export const render = async function render(input: XmlParserResult): Promise<string> {
+  const context = {
+    attributes: input.root.attributes,
+    canBeAtLevel: (): boolean => true,
+    focusMode: 'default',
+    hierarchy: (): '*' => '*',
+    id: '0',
+    level: 0,
+    name: input.root.name,
+    path: `xpath://${input.root.name}`,
+    render: (): string => '',
+  } satisfies Component.Interface;
+
   const authors = Component.utils.extract({
     aliases: ['authors', 'author', 'by'],
-    fallback: [defaults.author],
-    record: input.root.attributes,
+    context,
+    fallback: defaults.author,
     transform: (value) => value.split(',').map((author) => author.trim()),
   });
 
   const keywords = Component.utils.extract({
     aliases: ['keywords', 'tags'],
-    fallback: [defaults.keywords],
-    record: input.root.attributes,
+    context,
+    fallback: defaults.keywords,
     transform: (value) => value.split(',').map((keyword) => keyword.trim()),
   });
 
   const icon = Component.utils.extract({
     aliases: ['icon'],
+    context,
     fallback: defaults.icon,
-    record: input.root.attributes,
   });
 
   const description = Component.utils.extract({
     aliases: ['description'],
+    context,
     fallback: defaults.description,
-    record: input.root.attributes,
   });
 
   const background = Component.utils.extract({
     aliases: ['background', 'background-color'],
+    context,
     fallback: defaults.colors.background,
-    record: input.root.attributes,
   });
 
   const foreground = Component.utils.extract({
     aliases: ['foreground', 'foreground-color'],
+    context,
     fallback: defaults.colors.foreground,
-    record: input.root.attributes,
   });
 
   const primary = Component.utils.extract({
     aliases: ['primary', 'primary-color'],
+    context,
     fallback: defaults.colors.primary,
-    record: input.root.attributes,
   });
 
   const secondary = Component.utils.extract({
     aliases: ['secondary', 'secondary-color'],
+    context,
     fallback: defaults.colors.secondary,
-    record: input.root.attributes,
   });
 
   const size = Component.utils.extract({
     aliases: ['size', 'dimensions'],
-    fallback: defaults.size,
-    record: input.root.attributes,
+    context,
+    fallback: `${defaults.size.width}x${defaults.size.height}`,
     transform: function transform(value) {
       const regex = /(?<width>\d+)x(?<height>\d+)/iu;
       const match = regex.exec(value);
@@ -204,7 +216,7 @@ export const render = async function render(input: XmlParserResult): Promise<str
 
   const nonce = Component.utils.extract({
     aliases: ['nonce'],
-    record: input.root.attributes,
+    context,
   });
 
   const result = await renderNode(input.children);

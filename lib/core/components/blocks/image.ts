@@ -1,51 +1,28 @@
 import { Component } from '#lib/core/components/class';
-import { Logger } from '#lib/logger';
 
 /**
  * The `Image` component. Shows an image.
  */
 @Component.register.using({ aliases: ['Img'], plugin: false })
 export class Image extends Component {
-  /**
-   * The source of the image.
-   */
-  public readonly source: string;
+  /** The source of the image. Will be read of disk, or fetched of the internet. */
+  readonly #source: string = Component.utils.extract({
+    aliases: ['source', 'src'],
+    context: this,
+    missing: 'error',
+  });
 
-  /**
-   * The description of the image.
-   */
-  public readonly description?: string;
-
-  // eslint-disable-next-line jsdoc/require-jsdoc
-  public constructor(args: Component.ConstructorArguments) {
-    super(args);
-
-    const source = Component.utils.extract({
-      aliases: ['source', 'src'],
-      record: args.attributes,
-    });
-
-    if (typeof source !== 'string') {
-      throw new Error(`${Image.name} at ${this.path} is missing attribute 'source'.`);
-    }
-
-    const description = Component.utils.extract({
-      aliases: ['description', 'alt'],
-      record: args.attributes,
-    });
-
-    if (typeof description !== 'string') {
-      Logger.warn(`${Image.name} at ${this.path} is missing attribute 'description'.`);
-    }
-
-    this.source = source;
-    this.description = description;
-  }
+  /** The description of the image. Will be used for screen readers and such. */
+  readonly #description?: string = Component.utils.extract({
+    aliases: ['description', 'alt'],
+    context: this,
+    missing: 'warn',
+  });
 
   // eslint-disable-next-line jsdoc/require-jsdoc
   public async render({ children }: Component.RenderArguments): Promise<string> {
-    const description = this.description ?? '';
-    const source = await Component.utils.toDataURL(this.source);
+    const description = this.#description ?? '';
+    const source = await Component.utils.toDataURL(this.#source);
 
     if (children) throw new Error(`${Image.name} expected no children at ${this.path}`);
 
