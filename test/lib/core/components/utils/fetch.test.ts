@@ -1,5 +1,5 @@
 import { type MockInstance, beforeEach, describe, expect, test, vi } from 'vitest';
-import { toDataURL, toMime } from '#lib/core/components/utils';
+import { toDataURL, toMime } from '#lib/core/components/utils/fetch';
 import { promises as FileSystem } from 'fs';
 
 // --- Mock fs ---

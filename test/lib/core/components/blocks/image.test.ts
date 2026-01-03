@@ -1,9 +1,10 @@
+import * as componentUtils from '#lib/core/components/utils/index';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { Component } from '#lib/core/components/class';
 import { Image } from '#lib/core/components/blocks/image';
 
 const impl = async (src: string): Promise<string> => Promise.resolve(src);
-const spy = vi.spyOn(Component.utils, 'toDataURL').mockImplementation(impl);
+const spy = vi.spyOn(componentUtils, 'toDataURL').mockImplementation(impl);
 
 describe('class Image implements Component', () => {
   beforeEach(() => {
