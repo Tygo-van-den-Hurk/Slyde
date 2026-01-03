@@ -160,7 +160,7 @@ export function extract<F, T>({
 }): T | F | string | undefined {
   const value = find({ aliases, record: context.attributes }) ?? fallback ?? NULL;
   if (value === NULL) {
-    const attributes = aliases.join(', or');
+    const attributes = aliases.join(', or ');
     switch (missing) {
       case 'warn':
         Logger.warn(`${context.name} is missing one of the following attributes ${attributes}`);
