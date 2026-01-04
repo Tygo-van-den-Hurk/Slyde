@@ -1,7 +1,6 @@
 import { Marked } from 'marked';
 import { MarkupRenderer } from '#lib/core/markup/class';
 import { latex1Extension } from '#lib/core/markup/languages/latex';
-import { silence } from '#lib/utils/silence';
 
 const getRaw: ({ raw }: Readonly<{ raw: string }>) => string = ({ raw }) => raw;
 const getText: ({ text }: Readonly<{ text: string }>) => string = ({ text }) => text;

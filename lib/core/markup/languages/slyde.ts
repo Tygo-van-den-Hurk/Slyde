@@ -1,8 +1,6 @@
 import { Marked, type Token } from 'marked';
 import { MarkupRenderer } from '#lib/core/markup/class';
 import { latex2Extension } from '#lib/core/markup/languages/latex';
-import { silence } from '#lib/utils/silence';
-import { Logger } from '#lib/logger';
 
 interface TokenizerReturn {
   raw: string;
