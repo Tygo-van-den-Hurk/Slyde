@@ -31,7 +31,7 @@ export class Slide extends Component {
     if (typeof this.#title === 'string') {
       // eslint-disable-next-line no-inline-comments
       return /*HTML*/ `
-        <div class="w-full h-full" style="padding: calc(${this.#padding} * var(--unit));">
+        <div class="w-full h-full overflow-hidden" style="padding: calc(${this.#padding} * var(--unit));">
           <h2 class="text-primary font-bold text-xl" style="padding-bottom: calc(${this.#padding} * var(--unit) / 2);">
             ${this.#title}
           </h2>
@@ -44,7 +44,7 @@ export class Slide extends Component {
 
     // eslint-disable-next-line no-inline-comments
     return /*HTML*/ `
-      <div class="w-full h-full" style="padding: calc(${this.#padding} * var(--unit));">
+      <div class="w-full h-full overflow-hidden" style="padding: calc(${this.#padding} * var(--unit));">
         ${children?.() ?? ''}
       </div>
     `;
