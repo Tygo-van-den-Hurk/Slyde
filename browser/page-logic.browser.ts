@@ -214,9 +214,11 @@ export const handleKeyPresses = function handleKeyPresses(event: KeyboardEvent):
       toggleFullScreen();
       break;
     case 'ArrowDown':
+    case 'PageDown':
       if (isPDF()) scrollUsingUnit({ amount: 1, slides: true });
       break;
     case 'ArrowUp':
+    case 'PageUp':
       if (isPDF()) scrollUsingUnit({ amount: -1, slides: true });
       break;
     default:
