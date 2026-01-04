@@ -14,4 +14,11 @@ describe('class LatexRenderer extends MarkupRender', () => {
     const result = new LatexRenderer().render(`$${input}$`);
     expect(result).not.toBe(input);
   });
+
+  test('throws error when invalid latex is detected.', () => {
+    const input = `{x\\over2`;
+    const renderer = new LatexRenderer();
+    const fn = (): unknown => renderer.render(`$${input}$`);
+    expect(fn).toThrow();
+  });
 });
