@@ -45,8 +45,23 @@ export class Point extends Component {
       const result = symbolParser.safeParse(value);
       if (result.success) return result.data;
       throw new Error(
-        `${Component.name} ${Point.name} at ${this.path} expected attribute "${aliases.join('" or "')}" ` +
+        `${this.name} at ${this.path} expected attribute "${aliases.join('" or "')}" ` +
           `be one of "${symbolOptions.join('", "')}", but found: ${value}`
+      );
+    },
+  });
+
+  /** The padding at the top above the point between it and whats above it. */
+  readonly #paddingTop: number = Component.utils.extract({
+    aliases: ['padding-top', 'pt'],
+    context: this,
+    fallback: '1' as const,
+    // eslint-disable-next-line no-restricted-syntax
+    transform: (value) => {
+      const result = Number.parseFloat(value);
+      if (!Number.isNaN(result)) return result;
+      throw new Error(
+        `Attribute "padding" from ${this.name} at ${this.path} should be a number, but found ${value}`
       );
     },
   });
@@ -54,12 +69,13 @@ export class Point extends Component {
   // eslint-disable-next-line jsdoc/require-jsdoc
   public render({ children }: Component.RenderArguments): string {
     if (!children) {
-      throw new Error(`Expected ${Point.name} at ${this.path} to have children, but found none.`);
+      throw new Error(`Expected ${this.name} at ${this.path} to have children, but found none.`);
     }
 
     // eslint-disable-next-line no-inline-comments
     return /*HTML*/ `
-      <div class="pt-1 block before:content-['${symbolMap[this.#symbol]}'] before:mr-2 before:text-black">
+      <div class="pt-1 block before:content-['${symbolMap[this.#symbol]}'] before:mr-1 before:text-foreground" 
+        style="padding-top: calc(${this.#paddingTop} * var(--unit));">
         ${children()}
       </div>
     `;
