@@ -21,7 +21,7 @@ export class Slide extends Component {
       const result = Number.parseFloat(value);
       if (!Number.isNaN(result)) return result;
       throw new Error(
-        `Attribute "padding" from ${this.name} should be a number, but found ${value}`
+        `Attribute "padding" from ${this.name} at ${this.path} should be a number, but found ${value}`
       );
     },
   });
