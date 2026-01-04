@@ -7,13 +7,22 @@ import { TeX } from 'mathjax-full/js/input/tex.js';
 import type { Token } from 'marked';
 import { mathjax } from 'mathjax-full/js/mathjax.js';
 import { RegisterHTMLHandler as registerHTMLHandler } from 'mathjax-full/js/handlers/html.js';
+import { Logger } from '#lib/logger';
 
 const adaptor: LiteAdaptor = liteAdaptor();
 registerHTMLHandler(adaptor);
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 const document: MathDocument<LiteElement, string, string> = mathjax.document('', {
-  InputJax: new TeX(),
+  InputJax: new TeX({
+    formatError(_jax: unknown, error: unknown): never {
+      if (error !== null && typeof error === 'object') {
+        if ('message' in error && typeof error.message === 'string')
+          throw new Error(`Could not render latex: ${error.message}`, { cause: error });
+      }
+      throw error;
+    },
+  }),
   OutputJax: new SVG({ fontCache: 'local' }),
 });
 

@@ -1,8 +1,12 @@
+import * as utils from '#lib/core/markup/utils';
 import type { MarkupRendererInterface } from '#lib/core/markup/interfaces';
 import { Registry } from '#lib/core/registry';
 
 /** The `MarkupRenderer` base class before the registry is injected. */
 abstract class MarkupRenderer implements MarkupRendererInterface {
+  /** Common utilities for markup renderers. */
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  public static readonly utils = Object.freeze({ ...utils });
   public abstract render(input: string): ReturnType<MarkupRendererInterface['render']>;
 }
 

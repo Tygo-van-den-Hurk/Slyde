@@ -1,6 +1,8 @@
 import { Marked, type Token } from 'marked';
 import { MarkupRenderer } from '#lib/core/markup/class';
 import { latex2Extension } from '#lib/core/markup/languages/latex';
+import { silence } from '#lib/utils/silence';
+import { Logger } from '#lib/logger';
 
 interface TokenizerReturn {
   raw: string;
@@ -274,6 +276,10 @@ parser.use({ extensions: [...slydeMarkedExtensions] });
 export class SlydeMarkupRenderer extends MarkupRenderer {
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this, jsdoc/require-jsdoc
   public render(input: string): string {
-    return parser.parse(input, { async: false });
+    try {
+      return parser.parse(input, { async: false });
+    } catch (error: unknown) {
+      throw MarkupRenderer.utils.wrapMarkedError(error);
+    }
   }
 }
