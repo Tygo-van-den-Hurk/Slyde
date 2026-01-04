@@ -7,7 +7,6 @@ import { TeX } from 'mathjax-full/js/input/tex.js';
 import type { Token } from 'marked';
 import { mathjax } from 'mathjax-full/js/mathjax.js';
 import { RegisterHTMLHandler as registerHTMLHandler } from 'mathjax-full/js/handlers/html.js';
-import { Logger } from '#lib/logger';
 
 const adaptor: LiteAdaptor = liteAdaptor();
 registerHTMLHandler(adaptor);
