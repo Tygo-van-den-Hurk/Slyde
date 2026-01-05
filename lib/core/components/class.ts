@@ -1,3 +1,5 @@
+/* eslint-disable max-classes-per-file */
+
 import * as componentUtils from '#lib/core/components/utils/index';
 import type {
   ComponentConstructorArguments,
@@ -7,8 +9,12 @@ import type {
 import { Logger } from '#lib/logger';
 import { Registry } from '#lib/core/registry';
 
-/** The `Component` base class before the registry is injected. */
-abstract class Component implements ComponentInterface {
+/** Incorporates the constructor arguments into itself. */
+const Base = class Component implements ComponentConstructorArguments {
+  /** Utils related to components and their workings. */
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  public static readonly utils = Object.freeze({ ...componentUtils });
+
   /** The levels of certain components. Used for selectors: `slyde-component[level=1]`. */
   // eslint-disable-next-line @typescript-eslint/naming-convention
   public static readonly level = Object.freeze({
@@ -19,10 +25,6 @@ abstract class Component implements ComponentInterface {
     /** The level at which the slides can be placed. */
     slide: 1,
   });
-
-  /** Utils related to components and their workings. */
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  public static readonly utils = Object.freeze({ ...componentUtils });
 
   public readonly name;
   public readonly attributes;
@@ -42,9 +44,53 @@ abstract class Component implements ComponentInterface {
     this.level = args.level;
     this.path = args.path;
     this.id = args.id;
-    if (!this.canBeAtLevel(args.level)) {
+  }
+};
+
+/** The `Component` base class before the registry is injected. */
+abstract class Component extends Base implements ComponentInterface {
+  /** The width of this component. */
+  public readonly width = Component.utils.extract({
+    aliases: ['width', 'w'],
+    context: this,
+    // eslint-disable-next-line no-restricted-syntax
+    transform: (value) => {
+      if (this.level >= Component.level.block) return value;
+      Logger.warn(`${this.name} at ${this.path} cannot use property "width", ignoring value "${value}"`);
+      return void 0; // eslint-disable-line no-void
+    },
+  });
+
+  /** The height of this component. */
+  public readonly height = Component.utils.extract({
+    aliases: ['height', 'h'],
+    context: this,
+    // eslint-disable-next-line no-restricted-syntax
+    transform: (value) => {
+      if (this.level >= Component.level.block) return value;
+      Logger.warn(`${this.name} at ${this.path} cannot use property "height", ignoring value "${value}"`);
+      return void 0; // eslint-disable-line no-void
+    },
+  });
+
+  /** The maner of displaying this component. */
+  public readonly display = Component.utils.extract({
+    aliases: ['display', 'd'],
+    context: this,
+    fallback: 'block',
+    // eslint-disable-next-line no-restricted-syntax
+    transform: (value) => {
+      if (this.level >= Component.level.block) return value;
+      Logger.warn(`${this.name} at ${this.path} cannot use property "display", ignoring value "${value}"`);
+      return 'block'
+    },
+  });
+
+  public constructor(args: ComponentConstructorArguments) {
+    super(args);
+    if (!this.canBeAtLevel(this.level)) {
       throw new Error(
-        `${Component.name} ${new.target.name} at ${this.path} cannot be at level ${this.level}. ` +
+        `${this.name} at ${this.path} cannot be at level ${this.level}. ` +
           `Only at levels: ${this.hierarchy().toString()}`
       );
     }

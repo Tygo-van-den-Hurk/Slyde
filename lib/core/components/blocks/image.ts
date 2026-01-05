@@ -27,7 +27,7 @@ export class Image extends Component {
     if (children) throw new Error(`${Image.name} expected no children at ${this.path}`);
 
     // eslint-disable-next-line no-inline-comments
-    return /*HTML*/ `<img src="${source}" alt="${description}">`;
+    return /*HTML*/ `<img class="h-full w-full object-fill" src="${source}" alt="${description}">`;
   }
 
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this, jsdoc/require-jsdoc

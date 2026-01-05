@@ -79,7 +79,7 @@ export const renderElement = async function renderElement(
 
   const result = await component.render({ children });
   if (!executed) Logger.warn(`${node.name} at ${state.path} did not call to render it's children.`);
-  return wrapper(node, state, result);
+  return wrapper(component, state, result);
 };
 
 const defaultState = (): RenderState => ({

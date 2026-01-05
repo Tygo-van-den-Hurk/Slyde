@@ -4,24 +4,32 @@ import { MarkupRenderer } from '#lib/core/markup/class';
 import type { XmlParserElementNode } from 'xml-parser-xo';
 
 /** Wraps HTML in a `<slyde-component>` This is to make it easier for us to select elements. */
-export const wrapper = (
+export const wrapper = function wrapper(
   // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
-  element: XmlParserElementNode,
+  component: Component.Instance,
   state: RenderState,
   children: string
+): string {
+  let width = '';
+  if (component.width ?? '') width = `width:calc(${component.width} * var(--unit));`;
+
+  let height = '';
+  if (component.height ?? '') height = `height:calc(${component.height} * var(--unit));`;
+
   // eslint-disable-next-line no-inline-comments
-): string => /*HTML*/ `
-  <slyde-component name="${element.name}" 
-    path="${state.path}" 
-    id="slyde-component-container-${state.id}" 
-    markup="${state.markup}"
-    level="${state.level}"
-    amount-of-children="${element.children?.length ?? 0}"
-  >
-    <!-- ${state.notes.join('\n\n')} -->
-    ${children}
-  </slyde-component>
-`;
+  return /*HTML*/ `
+    <slyde-component name="${component.name}" 
+      style="${width}display:${component.display};${height}"
+      path="${component.path}" 
+      id="slyde-component-container-${component.id}" 
+      markup="${state.markup}"
+      level="${state.level}"
+    >
+      <!-- ${state.notes.join('\n\n')} -->
+      ${children}
+    </slyde-component>
+  `;
+};
 
 /**
  * Gets the attribute value pairs from an XML like string. For example
