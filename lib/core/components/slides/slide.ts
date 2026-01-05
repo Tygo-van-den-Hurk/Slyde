@@ -15,15 +15,8 @@ export class Slide extends Component {
   readonly #padding: number = Component.utils.extract({
     aliases: ['padding', 'p'],
     context: this,
-    fallback: '4' as const,
-    // eslint-disable-next-line no-restricted-syntax
-    transform: (value) => {
-      const result = Number.parseFloat(value);
-      if (!Number.isNaN(result)) return result;
-      throw new Error(
-        `Attribute "padding" from ${this.name} at ${this.path} should be a number, but found ${value}`
-      );
-    },
+    fallback: 4,
+    transform: Component.utils.transform.number,
   });
 
   // eslint-disable-next-line jsdoc/require-jsdoc

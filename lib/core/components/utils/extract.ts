@@ -6,8 +6,10 @@ import { Logger } from '#lib/logger';
 /** Generates the error messages for the extract function. */
 export class ExtractError extends Error {
   // eslint-disable-next-line jsdoc/require-jsdoc
-  public constructor(message: string, context: ComponentInterface) {
-    super(`Problem with ${context.name} at ${context.path}: ${message}`);
+  public constructor(message: string, context: ComponentInterface, key?: string) {
+    let suffix = '';
+    if ((key ?? '') !== '') suffix = `@${key}`;
+    super(`Problem with ${context.name} at ${context.path}${suffix}: ${message}`);
   }
 }
 
@@ -18,21 +20,16 @@ const find = function find({
 }: {
   readonly aliases: readonly string[];
   readonly record: Readonly<Record<string, string | undefined>>;
-}): string | undefined {
-  // eslint-disable-next-line @typescript-eslint/init-declarations
-  let value: string | undefined;
-
+}): [string, string] | [undefined, undefined] {
   for (const alias of aliases) {
     const candidate = record[alias];
     if (typeof candidate !== 'string') continue;
-    value = candidate;
-    break;
+    return [candidate, alias];
   }
 
-  return value;
+  // eslint-disable-next-line no-void
+  return [void 0, void 0];
 };
-
-const NULL = Symbol('undefined');
 
 /**
  * Extracts a key from a record of attributes, or uses the fallback if none of the aliases were present in the record.
@@ -82,7 +79,7 @@ export function extract<F, T>({
   readonly aliases: readonly string[];
   readonly context: ComponentInterface;
   readonly fallback: F;
-  readonly transform: (value: string | F) => T;
+  readonly transform: (value: string | F, context: ComponentInterface, key?: string) => T;
 }): T;
 
 // Fallback without transform
@@ -106,7 +103,7 @@ export function extract<T>({
   readonly aliases: readonly string[];
   readonly context: ComponentInterface;
   readonly missing: 'error';
-  readonly transform: (value: string) => T;
+  readonly transform: (value: string, context: ComponentInterface, key?: string) => T;
 }): T;
 
 // No fallback but transform, missing is accept or warn (or omitted)
@@ -119,7 +116,11 @@ export function extract<T>({
   readonly aliases: readonly string[];
   readonly context: ComponentInterface;
   readonly missing?: 'accept' | 'warn';
-  readonly transform: (value: string | undefined) => T | undefined;
+  readonly transform: (
+    value: string | undefined,
+    context: ComponentInterface,
+    key?: string
+  ) => T | undefined;
 }): T | undefined;
 
 // No fallback and no transform, but missing is error
@@ -156,10 +157,16 @@ export function extract<F, T>({
   readonly context: ComponentInterface;
   readonly fallback?: F;
   readonly missing?: 'accept' | 'warn' | 'error';
-  readonly transform?: (value: string | F) => T;
+  readonly transform?: (value: string | F, context: ComponentInterface, key?: string) => T;
 }): T | F | string | undefined {
-  const value = find({ aliases, record: context.attributes }) ?? fallback ?? NULL;
-  if (value === NULL) {
+  type Result = [string, string] | [F, undefined] | [undefined, undefined];
+  let [value, key]: Result = find({ aliases, record: context.attributes });
+
+  // eslint-disable-next-line no-void
+  if (typeof value !== 'string') [value, key] = [fallback, void 0];
+
+  // eslint-disable-next-line no-void
+  if (value === void 0) {
     const attributes = aliases.join(', or ');
     switch (missing) {
       case 'warn':
@@ -168,16 +175,16 @@ export function extract<F, T>({
       case 'error':
         throw new ExtractError(
           `missing one of the following required attributes: ${attributes}`,
-          context
+          context,
+          key
         );
       case 'accept':
       default:
     }
-
     // eslint-disable-next-line no-void
     return void 0;
   }
 
   if (!transform) return value;
-  return transform(value);
+  return transform(value, context, key);
 }

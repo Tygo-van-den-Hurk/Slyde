@@ -29,6 +29,20 @@ const symbolMap: Record<Symbol, string> = {
 
 const defaultSymbol = 'dash' as Symbol;
 const aliases = ['symbol', 'type'] as readonly string[];
+const transform = function transform(
+  value: string,
+  context: Component.Interface,
+  key?: string
+): Symbol {
+  const result = symbolParser.safeParse(value);
+  if (result.success) return result.data;
+  let suffix = ` with attributes "${aliases.join('", "')}"`;
+  if (typeof key === 'string') suffix = `@${key}`;
+  throw new Error(
+    `${context.name} at ${context.path}${suffix} expected attribute to be ` +
+      `be one of "${symbolOptions.join('", "')}", but found: ${value}`
+  );
+};
 
 /**
  * A component that just shows bullet point. The symbol in front of the component is customisable.
@@ -36,34 +50,19 @@ const aliases = ['symbol', 'type'] as readonly string[];
 @Component.register.using({ aliases: ['pnt'], plugin: false })
 export class Point extends Component {
   /** The symbol to put in front of the "text". */
-  readonly #symbol: zod.infer<typeof symbolParser> = Component.utils.extract({
+  readonly #symbol = Component.utils.extract({
     aliases,
     context: this,
     fallback: defaultSymbol,
-    // eslint-disable-next-line no-restricted-syntax
-    transform: (value) => {
-      const result = symbolParser.safeParse(value);
-      if (result.success) return result.data;
-      throw new Error(
-        `${this.name} at ${this.path} expected attribute "${aliases.join('" or "')}" ` +
-          `be one of "${symbolOptions.join('", "')}", but found: ${value}`
-      );
-    },
+    transform,
   });
 
   /** The padding at the top above the point between it and whats above it. */
-  readonly #paddingTop: number = Component.utils.extract({
+  readonly #paddingTop = Component.utils.extract({
     aliases: ['padding-top', 'pt'],
     context: this,
-    fallback: '1' as const,
-    // eslint-disable-next-line no-restricted-syntax
-    transform: (value) => {
-      const result = Number.parseFloat(value);
-      if (!Number.isNaN(result)) return result;
-      throw new Error(
-        `Attribute "padding" from ${this.name} at ${this.path} should be a number, but found ${value}`
-      );
-    },
+    fallback: 1,
+    transform: Component.utils.transform.number,
   });
 
   // eslint-disable-next-line jsdoc/require-jsdoc

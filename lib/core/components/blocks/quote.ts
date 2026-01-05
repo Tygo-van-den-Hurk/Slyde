@@ -7,7 +7,7 @@ import { Component } from '#lib/core/components/class';
 export class Quote extends Component {
   /** Who said the quote. Will be displayed with the quote */
   readonly #by?: string = Component.utils.extract({
-    aliases: ['by'],
+    aliases: ['authors', 'author', 'by'],
     context: this,
     missing: 'warn',
   });
