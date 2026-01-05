@@ -56,7 +56,9 @@ abstract class Component extends Base implements ComponentInterface {
     // eslint-disable-next-line no-restricted-syntax
     transform: (value) => {
       if (this.level >= Component.level.block) return value;
-      Logger.warn(`${this.name} at ${this.path} cannot use property "width", ignoring value "${value}"`);
+      Logger.warn(
+        `${this.name} at ${this.path} cannot use property "width", ignoring value "${value}"`
+      );
       return void 0; // eslint-disable-line no-void
     },
   });
@@ -68,7 +70,9 @@ abstract class Component extends Base implements ComponentInterface {
     // eslint-disable-next-line no-restricted-syntax
     transform: (value) => {
       if (this.level >= Component.level.block) return value;
-      Logger.warn(`${this.name} at ${this.path} cannot use property "height", ignoring value "${value}"`);
+      Logger.warn(
+        `${this.name} at ${this.path} cannot use property "height", ignoring value "${value}"`
+      );
       return void 0; // eslint-disable-line no-void
     },
   });
@@ -81,8 +85,10 @@ abstract class Component extends Base implements ComponentInterface {
     // eslint-disable-next-line no-restricted-syntax
     transform: (value) => {
       if (this.level >= Component.level.block) return value;
-      Logger.warn(`${this.name} at ${this.path} cannot use property "display", ignoring value "${value}"`);
-      return 'block'
+      Logger.warn(
+        `${this.name} at ${this.path} cannot use property "display", ignoring value "${value}"`
+      );
+      return 'block';
     },
   });
 

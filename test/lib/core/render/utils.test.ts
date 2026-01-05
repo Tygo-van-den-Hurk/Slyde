@@ -1,9 +1,4 @@
-import {
-  Component,
-  ComponentInterface,
-  ComponentRenderArguments,
-  Point,
-} from '#lib/core/components/index';
+import { Component, Point } from '#lib/core/components/index';
 import { Globals, type RenderState } from '#lib/core/render/types';
 import { MarkupRenderer, SlydeMarkupRenderer } from '#lib/core/markup/index';
 import {
