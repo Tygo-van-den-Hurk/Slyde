@@ -7,6 +7,13 @@ abstract class MarkupRenderer implements MarkupRendererInterface {
   /** Common utilities for markup renderers. */
   // eslint-disable-next-line @typescript-eslint/naming-convention
   public static readonly utils = Object.freeze({ ...utils });
+
+  public readonly name;
+
+  public constructor() {
+    this.name = new.target.name;
+  }
+
   public abstract render(input: string): ReturnType<MarkupRendererInterface['render']>;
 }
 
