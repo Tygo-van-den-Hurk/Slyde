@@ -1,4 +1,9 @@
-import { Component, Point } from '#lib/core/components/index';
+import {
+  Component,
+  ComponentInterface,
+  ComponentRenderArguments,
+  Point,
+} from '#lib/core/components/index';
 import { Globals, type RenderState } from '#lib/core/render/types';
 import { MarkupRenderer, SlydeMarkupRenderer } from '#lib/core/markup/index';
 import {
@@ -11,12 +16,28 @@ import { describe, expect, test } from 'vitest';
 import type { XmlParserElementNode } from 'xml-parser-xo';
 
 describe('function wrapper', () => {
-  const node: XmlParserElementNode = {
+  const component: Component.Instance = {
     attributes: {},
-    children: null,
+    canBeAtLevel(): never {
+      throw new Error('Function not implemented.');
+    },
+    display: '',
+    focusMode: 'follows',
+    // eslint-disable-next-line no-void
+    height: void 0,
+    hierarchy(): never {
+      throw new Error('Function not implemented.');
+    },
+    id: '',
+    level: Component.level.block,
     name: Point.name,
-    type: 'Element',
-  } satisfies XmlParserElementNode;
+    path: '',
+    render(): never {
+      throw new Error('Function not implemented.');
+    },
+    // eslint-disable-next-line no-void
+    width: void 0,
+  } satisfies Component.Instance;
 
   const state: RenderState = {
     globals: Globals.instance,
@@ -31,7 +52,7 @@ describe('function wrapper', () => {
   const children = '<VERY-SPECIFIC-PATTERN>';
 
   test('extracting empty string', () => {
-    const result = wrapper(node, state, children);
+    const result = wrapper(component, state, children);
     expect(result).toContain(children);
   });
 });
