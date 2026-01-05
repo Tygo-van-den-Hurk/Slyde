@@ -48,6 +48,8 @@ And the field will be assigned at object construction and extracted from the att
 <MyImage source="This is the source field" description="This is the description field">
 ```
 
+There a a couple of utilities to transform types in [`#lib/core/components/utils/transform.ts`](https://github.com/Tygo-van-den-Hurk/Slyde/blob/main/lib/core/components/utils/transform.ts).
+
 ## Styling
 
 Most of the lines of any `Component` plugin will most likely be the HTML output when rendering. That's why to make it as convenient to write your own components as possible I've added [tailwind](https://tailwindcss.com/) to the mix. You can use [tailwind](https://tailwindcss.com/) to define the looks of your component and the classes will be created for you dynamically later at runtime.
