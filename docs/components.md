@@ -1,6 +1,18 @@
 # Components
 
-Components are the building blocks in Slyde. In your XML template
+Components are the building blocks in Slyde. In your XML template the elements you create represent those components. So in the example:
+
+```XML
+<presentation title="My First Slyde Presentation" by="Tygo van den Hurk">
+  <slide title="Why you should use Slyde">
+    <point>It is super **fast and easy** to make slides</point>
+    <point>The animations are **gorgeous**!</point>
+    <point>Recipient only needs a browser to open it</point>
+  </slide>
+</presentation>
+```
+
+`Presentation`, `Slide`, and `Point` are all components.
 
 ## Using them
 
