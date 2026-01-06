@@ -14,7 +14,7 @@ export class ExtractError extends Error {
 }
 
 /** Extract the value from the from the record, given a list of aliases. */
-const find = function find({
+export const find = function find({
   aliases,
   record,
 }: {
@@ -188,3 +188,6 @@ export function extract<F, T>({
   if (!transform) return value;
   return transform(value, context, key);
 }
+
+// eslint-disable-next-line jsdoc/require-jsdoc, import/no-default-export
+export default extract;

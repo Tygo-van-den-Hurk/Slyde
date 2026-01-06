@@ -105,3 +105,6 @@ export const toDataURL = async function toDataURL(
     `Expected either a valid URL or an existing file path, but found neither: ${input} (resolved as: ${resolvedPath})`
   );
 };
+
+// eslint-disable-next-line jsdoc/require-jsdoc, import/no-default-export
+export default toDataURL;

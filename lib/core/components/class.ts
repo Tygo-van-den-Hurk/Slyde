@@ -1,6 +1,5 @@
 /* eslint-disable max-classes-per-file */
 
-import * as componentUtils from '#lib/core/components/utils/index';
 import type {
   ComponentConstructorArguments,
   ComponentInterface,
@@ -8,6 +7,7 @@ import type {
 } from '#lib/core/components/interfaces';
 import { Logger } from '#lib/logger';
 import { Registry } from '#lib/core/registry';
+import componentUtils from '#lib/core/components/utils/index';
 
 /** Incorporates the constructor arguments into itself. */
 const Base = class Component implements ComponentConstructorArguments {

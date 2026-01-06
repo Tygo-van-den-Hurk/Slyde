@@ -56,3 +56,6 @@ export const transformEnum = function transformEnum<const T extends readonly str
 
 /** Functions to help transform strings to types */
 export const transform = Object.freeze({ boolean, enum: transformEnum, number });
+
+// eslint-disable-next-line jsdoc/require-jsdoc, import/no-default-export
+export default transform;
