@@ -19,24 +19,20 @@ export class Quote extends Component {
     missing: 'warn',
   });
 
+  @Component.utils.children.require
   // eslint-disable-next-line jsdoc/require-jsdoc
   public render({ children }: Component.RenderArguments): string {
-    if (!children) {
-      throw new Error(`Expected ${this.name} at ${this.path} to have children, but found none.`);
-    }
+    let cite = '',
+      footer = '';
 
-    let cite = '';
-    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-    if (this.#cite) cite = `cite="${this.#cite}"`;
-
-    let footer = '';
-    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions, no-inline-comments
-    if (this.#by) footer = /*HTML*/ `<footer><cite>${this.#by}</cite></footer>`;
+    // eslint-disable-next-line no-inline-comments
+    if ((this.#by ?? '').length > 0) footer = /*HTML*/ `<footer><cite>${this.#by}</cite></footer>`;
+    if ((this.#cite ?? '').length > 0) cite = `cite="${this.#cite}"`;
 
     // eslint-disable-next-line no-inline-comments
     return /*HTML*/ `
       <blockquote ${cite}>
-        <p>${children()}</p>
+        <p>${children?.()}</p>
         ${footer}
       </blockquote>
     `;

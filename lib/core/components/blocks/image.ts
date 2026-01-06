@@ -19,13 +19,11 @@ export class Image extends Component {
     missing: 'warn',
   });
 
+  @Component.utils.children.reject
   // eslint-disable-next-line jsdoc/require-jsdoc
-  public async render({ children }: Component.RenderArguments): Promise<string> {
+  public async render(): Promise<string> {
     const description = this.#description ?? '';
     const source = await Component.utils.toDataURL(this.#source);
-
-    if (children) throw new Error(`${Image.name} expected no children at ${this.path}`);
-
     // eslint-disable-next-line no-inline-comments
     return /*HTML*/ `<img class="h-full w-full object-fill" src="${source}" alt="${description}">`;
   }

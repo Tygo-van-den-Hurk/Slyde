@@ -6,7 +6,7 @@ import { Component } from '#lib/core/components/class';
 @Component.register.using({ plugin: false })
 export class QuestionSlide extends Component {
   /** The title of this slide. */
-  readonly #title?: string = Component.utils.extract({
+  readonly #title = Component.utils.extract({
     aliases: ['title', 'header'],
     context: this,
     fallback: 'Questions?',

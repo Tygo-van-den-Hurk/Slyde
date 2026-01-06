@@ -1,4 +1,5 @@
 import { Component } from '#lib/core/components/class';
+import type { RequireAll } from '#lib/types';
 
 const symbolMap = {
   arrow: '&rarr;',
@@ -35,17 +36,16 @@ export class Point extends Component {
     transform: Component.utils.transform.number,
   });
 
+  @Component.utils.children.require
   // eslint-disable-next-line jsdoc/require-jsdoc
   public render({ children }: Component.RenderArguments): string {
-    if (!children) {
-      throw new Error(`Expected ${this.name} at ${this.path} to have children, but found none.`);
-    }
-
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const inner = children!();
     // eslint-disable-next-line no-inline-comments
     return /*HTML*/ `
       <div class="pt-1 block before:content-['${symbolMap[this.#symbol]}'] before:mr-1 before:text-foreground" 
         style="padding-top: calc(${this.#paddingTop} * var(--unit));">
-        ${children()}
+        ${inner}
       </div>
     `;
   }

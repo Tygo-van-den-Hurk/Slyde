@@ -58,6 +58,7 @@ export class iFrame extends Component {
     transform: Component.utils.transform.boolean,
   });
 
+  @Component.utils.children.reject
   // eslint-disable-next-line jsdoc/require-jsdoc
   public render(): string {
     let frameborder = '',
