@@ -42,5 +42,17 @@ export const number = function number(
   );
 };
 
+/** Transforms a string to one of the enum options. */
+export const transformEnum = function transformEnum<const T extends readonly string[]>(options: T) {
+  type Option = T[number];
+  return function transform(value: string, context: ComponentInterface, key?: string): Option {
+    if (options.includes(value)) return value;
+    const path = `${context.path}@${key}`;
+    throw new Error(
+      `${context.name} expected ${path} to be one of "${options.join('", "')}", but found "${value}".`
+    );
+  };
+};
+
 /** Functions to help transform strings to types */
-export const transform = Object.freeze({ boolean, number });
+export const transform = Object.freeze({ boolean, enum: transformEnum, number });

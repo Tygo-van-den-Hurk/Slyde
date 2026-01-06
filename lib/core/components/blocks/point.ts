@@ -1,22 +1,6 @@
-import * as zod from 'zod';
 import { Component } from '#lib/core/components/class';
 
-const symbolOptions = [
-  'arrow',
-  'check',
-  'circle',
-  'cross',
-  'dash',
-  'diamond',
-  'square',
-  'star',
-] as const;
-
-const symbolParser = zod.enum(symbolOptions);
-
-type Symbol = zod.infer<typeof symbolParser>;
-
-const symbolMap: Record<Symbol, string> = {
+const symbolMap = {
   arrow: '&rarr;',
   check: '&#10003;',
   circle: '&bull;',
@@ -25,24 +9,7 @@ const symbolMap: Record<Symbol, string> = {
   diamond: '&#9670;',
   square: '&#9642;',
   star: '&#9733;',
-};
-
-const defaultSymbol = 'dash' as Symbol;
-const aliases = ['symbol', 'type'] as readonly string[];
-const transform = function transform(
-  value: string,
-  context: Component.Interface,
-  key?: string
-): Symbol {
-  const result = symbolParser.safeParse(value);
-  if (result.success) return result.data;
-  let suffix = ` with attributes "${aliases.join('", "')}"`;
-  if (typeof key === 'string') suffix = `@${key}`;
-  throw new Error(
-    `${context.name} at ${context.path}${suffix} expected attribute to be ` +
-      `be one of "${symbolOptions.join('", "')}", but found: ${value}`
-  );
-};
+} as const;
 
 /**
  * A component that just shows bullet point. The symbol in front of the component is customisable.
@@ -51,10 +18,13 @@ const transform = function transform(
 export class Point extends Component {
   /** The symbol to put in front of the "text". */
   readonly #symbol = Component.utils.extract({
-    aliases,
+    aliases: ['symbol', 'type'],
     context: this,
-    fallback: defaultSymbol,
-    transform,
+    fallback: 'dash',
+    transform: Component.utils.transform.enum(
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
+      Object.keys(symbolMap) as (keyof typeof symbolMap)[]
+    ),
   });
 
   /** The padding at the top above the point between it and whats above it. */
