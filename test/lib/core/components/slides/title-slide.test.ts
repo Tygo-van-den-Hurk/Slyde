@@ -23,33 +23,38 @@ describe('class TitleSlide implements Component', () => {
   const children = (() => pattern) as () => string;
   const render = {} satisfies Component.RenderArguments;
 
-  test('renders author if present', () => {
+  test('renders author if present', async () => {
     const author = 'Tygo van den Hurk';
     const attributes = { author };
-    const slide = new TitleSlide({ ...construct, attributes });
-    expect(slide.render({})).toContain(author);
+    const slide = new TitleSlide({ ...construct, attributes }) as Component.Interface;
+    const result = await slide.render({ ...render });
+    expect(result).toContain(author);
   });
 
-  test('renders all authors if present', () => {
+  test('renders all authors if present', async () => {
     const author1 = 'Tygo van den Hurk';
     const author2 = 'John Doe';
     const authors = `${author1}, ${author2}`;
     const attributes = { authors };
-    const slide = new TitleSlide({ ...construct, attributes });
-    const result = slide.render({});
+    const slide = new TitleSlide({ ...construct, attributes }) as Component.Interface;
+    const result = await slide.render({ ...render });
     expect(result).toContain(author1);
     expect(result).toContain(author2);
   });
 
-  test('renders with children', () => {
-    expect(() => new TitleSlide({ ...construct }).render({ ...render, children })).not.toThrow();
+  // Required because it returns a string, not a Promise<string> this wrapper turns it into a promise:
+  // eslint-disable-next-line @typescript-eslint/return-await
+  const wrap = async <T>(fn: () => Promise<T> | T): Promise<T> => await fn();
+
+  test('does not render with children', async () => {
+    const slide = new TitleSlide({ ...construct }) as Component.Interface;
+    const fn = async (): Promise<string> => slide.render({ ...render, children });
+    await expect(wrap(fn)).rejects.toThrow();
   });
 
-  test('renders without children', () => {
-    expect(() => new TitleSlide({ ...construct }).render({ ...render })).not.toThrow();
-  });
-
-  test('uses children within somewhere', () => {
-    expect(new TitleSlide({ ...construct }).render({ ...render, children })).toContain(pattern);
+  test('renders without children', async () => {
+    const slide = new TitleSlide({ ...construct }) as Component.Interface;
+    const fn = async (): Promise<string> => slide.render({ ...render })
+    await expect(wrap(fn)).resolves.not.toThrow();
   });
 });

@@ -38,12 +38,12 @@ describe('class Image implements Component', () => {
   const render = {} satisfies Component.RenderArguments;
 
   test('renders without children', async () => {
-    const image = new Image({ ...construct });
+    const image = new Image({ ...construct }) as Component.Interface;
     await expect(image.render({ ...render })).resolves.not.toThrow();
   });
 
   test('does not render with children', async () => {
-    const image = new Image({ ...construct });
+    const image = new Image({ ...construct }) as Component.Interface;
     await expect(async () => image.render({ ...render, children })).rejects.toThrow();
   });
 });
