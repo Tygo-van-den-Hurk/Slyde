@@ -53,12 +53,10 @@ abstract class Component extends Base implements ComponentInterface {
   public readonly width = Component.utils.extract({
     aliases: ['width', 'w'],
     context: this,
-    // eslint-disable-next-line no-restricted-syntax
-    transform: (value) => {
-      if (this.level >= Component.level.block) return value;
-      Logger.warn(
-        `${this.name} at ${this.path} cannot use property "width", ignoring value "${value}"`
-      );
+    transform(value, context, key) {
+      const { name, path, level } = context;
+      if (level > Component.level.slide || (value ?? '') === '') return value;
+      Logger.warn(`${name} at ${path} cannot use property "${key}", ignoring value "${value}"`);
       return void 0; // eslint-disable-line no-void
     },
   });
@@ -67,12 +65,10 @@ abstract class Component extends Base implements ComponentInterface {
   public readonly height = Component.utils.extract({
     aliases: ['height', 'h'],
     context: this,
-    // eslint-disable-next-line no-restricted-syntax
-    transform: (value) => {
-      if (this.level >= Component.level.block) return value;
-      Logger.warn(
-        `${this.name} at ${this.path} cannot use property "height", ignoring value "${value}"`
-      );
+    transform(value, context, key) {
+      const { name, path, level } = context;
+      if (level > Component.level.slide || (value ?? '') === '') return value;
+      Logger.warn(`${name} at ${path} cannot use property "${key}", ignoring value "${value}"`);
       return void 0; // eslint-disable-line no-void
     },
   });
@@ -82,12 +78,10 @@ abstract class Component extends Base implements ComponentInterface {
     aliases: ['display', 'd'],
     context: this,
     fallback: 'block',
-    // eslint-disable-next-line no-restricted-syntax
-    transform: (value) => {
-      if (this.level >= Component.level.block) return value;
-      Logger.warn(
-        `${this.name} at ${this.path} cannot use property "display", ignoring value "${value}"`
-      );
+    transform(value, context, key) {
+      const { name, path, level } = context;
+      if (level > Component.level.slide || value === 'block') return value;
+      Logger.warn(`${name} at ${path} cannot use property "${key}", ignoring value "${value}"`);
       return 'block';
     },
   });
