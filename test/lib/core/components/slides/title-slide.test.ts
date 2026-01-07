@@ -54,7 +54,7 @@ describe('class TitleSlide implements Component', () => {
 
   test('renders without children', async () => {
     const slide = new TitleSlide({ ...construct }) as Component.Interface;
-    const fn = async (): Promise<string> => slide.render({ ...render })
+    const fn = async (): Promise<string> => slide.render({ ...render });
     await expect(wrap(fn)).resolves.not.toThrow();
   });
 });
