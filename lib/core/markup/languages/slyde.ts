@@ -1,4 +1,4 @@
-import { Marked, type Token } from 'marked';
+import { Marked, type RendererObject, type Token } from 'marked';
 import { MarkupRenderer } from '#lib/core/markup/class';
 import { latex2Extension } from '#lib/core/markup/languages/latex';
 
@@ -20,7 +20,7 @@ export const slydeBoldExtension = {
     // @ts-expect-error - this.parser exists on the renderer context
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, no-ternary, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     const text = token.tokens ? this.parser.parseInline(token.tokens) : token.text;
-    return `<b>${text}</b>`;
+    return `<strong>${text}</strong>`;
   },
   start: (src: string): number => src.indexOf('**'),
   tokenizer: function tokenizer(src: string): undefined | TokenizerReturn {
@@ -55,7 +55,7 @@ export const slydeItalicExtension = {
     // @ts-expect-error - this.parser exists on the renderer context
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, no-ternary, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     const text = token.tokens ? this.parser.parseInline(token.tokens) : token.text;
-    return `<i>${text}</i>`;
+    return `<em>${text}</em>`;
   },
   start: (src: string): number => src.indexOf('//'),
   tokenizer: function tokenizer(src: string): undefined | TokenizerReturn {
@@ -239,29 +239,41 @@ export const slydeMarkedExtensions = [
 
 // ~ MARKED PARSER ~ //
 
-const getRaw: ({ raw }: Readonly<{ raw: string }>) => string = ({ raw }) => raw;
-const getText: ({ text }: Readonly<{ text: string }>) => string = ({ text }) => text;
+type Ignore = 'tablerow' | 'tablecell' | 'checkbox' | 'strong' | 'link' | 'text';
+type AllProps = Required<RendererObject>;
+type AllIgnoredProps = Omit<AllProps, Ignore>;
 
 const parser = new Marked({
   breaks: false,
-  gfm: false,
+  gfm: true,
   renderer: {
-    blockquote: getRaw,
-    em: getRaw,
-    heading: getRaw,
-    hr: getRaw,
-    html: getRaw,
-    image: getRaw,
-    list: getRaw,
-    listitem: getRaw,
+    // All Markdown properties that should not be rendered
+    blockquote: ({ raw }: { readonly raw: string }): typeof raw => raw,
+    br: ({ raw }: { readonly raw: string }): typeof raw => raw,
+    code: ({ raw }: { readonly raw: string }): typeof raw => raw,
+    codespan: ({ raw }: { readonly raw: string }): typeof raw => raw,
+    def: ({ raw }: { readonly raw: string }): typeof raw => raw,
+    del: ({ raw }: { readonly raw: string }): typeof raw => raw,
+    em: ({ raw }: { readonly raw: string }): typeof raw => raw,
+    heading: ({ raw }: { readonly raw: string }): typeof raw => raw,
+    hr: ({ raw }: { readonly raw: string }): typeof raw => raw,
+    html: ({ raw }: { readonly raw: string }): typeof raw => raw,
+    image: ({ raw }: { readonly raw: string }): typeof raw => raw,
+    list: ({ raw }: { readonly raw: string }): typeof raw => raw,
+    listitem: ({ raw }: { readonly raw: string }): typeof raw => raw,
     // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
-    paragraph({ tokens }): string {
-      return this.parser.parseInline(tokens);
+    paragraph({ tokens, raw }): string {
+      const parsed = this.parser.parseInline(tokens);
+      const trailingNewlines = /\n+$/u.exec(raw)?.[0] ?? '';
+      return parsed + trailingNewlines;
     },
-    strong: getRaw,
-    table: getRaw,
-    tablecell: getText,
-    tablerow: getText,
+    space: ({ raw }: { readonly raw: string }): typeof raw => raw,
+    table: ({ raw }: { readonly raw: string }): typeof raw => raw,
+  } satisfies AllIgnoredProps,
+  tokenizer: {
+    hr: (): undefined => void 0, // eslint-disable-line no-void
+    html: (): undefined => void 0, // eslint-disable-line no-void
+    list: (): undefined => void 0, // eslint-disable-line no-void
   },
 });
 

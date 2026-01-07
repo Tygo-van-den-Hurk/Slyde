@@ -1,28 +1,49 @@
-import { Marked } from 'marked';
+import { Marked, type RendererObject } from 'marked';
 import { MarkupRenderer } from '#lib/core/markup/class';
 import { latex1Extension } from '#lib/core/markup/languages/latex';
 
-const getRaw: ({ raw }: Readonly<{ raw: string }>) => string = ({ raw }) => raw;
-const getText: ({ text }: Readonly<{ text: string }>) => string = ({ text }) => text;
+type Render =
+  | 'tablerow'
+  | 'tablecell'
+  | 'checkbox'
+  | 'strong'
+  | 'link'
+  | 'text'
+  | 'em'
+  | 'del'
+  | 'code'
+  | 'codespan';
+
+type AllProps = Required<RendererObject>;
+type AllIgnoredProps = Omit<AllProps, Render>;
 
 const parser = new Marked({
   breaks: false,
   gfm: true,
   renderer: {
-    blockquote: getRaw,
-    heading: getRaw,
-    hr: getRaw,
-    html: getRaw,
-    image: getRaw,
-    list: getRaw,
-    listitem: getRaw,
+    // All Markdown properties that should not be rendered
+    blockquote: ({ raw }: { readonly raw: string }): typeof raw => raw,
+    br: ({ raw }: { readonly raw: string }): typeof raw => raw,
+    def: ({ raw }: { readonly raw: string }): typeof raw => raw,
+    heading: ({ raw }: { readonly raw: string }): typeof raw => raw,
+    hr: ({ raw }: { readonly raw: string }): typeof raw => raw,
+    html: ({ raw }: { readonly raw: string }): typeof raw => raw,
+    image: ({ raw }: { readonly raw: string }): typeof raw => raw,
+    list: ({ raw }: { readonly raw: string }): typeof raw => raw,
+    listitem: ({ raw }: { readonly raw: string }): typeof raw => raw,
     // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
-    paragraph({ tokens }): string {
-      return this.parser.parseInline(tokens);
+    paragraph({ tokens, raw }): string {
+      const parsed = this.parser.parseInline(tokens);
+      const trailingNewlines = /\n+$/u.exec(raw)?.[0] ?? '';
+      return parsed + trailingNewlines;
     },
-    table: getRaw,
-    tablecell: getText,
-    tablerow: getText,
+    space: ({ raw }: { readonly raw: string }): typeof raw => raw,
+    table: ({ raw }: { readonly raw: string }): typeof raw => raw,
+  } satisfies AllIgnoredProps,
+  tokenizer: {
+    hr: (): undefined => void 0, // eslint-disable-line no-void
+    html: (): undefined => void 0, // eslint-disable-line no-void
+    list: (): undefined => void 0, // eslint-disable-line no-void
   },
 });
 
