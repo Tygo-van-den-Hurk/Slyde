@@ -271,8 +271,10 @@ export const cli = yargs(hideBin(process.argv))
   // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types,, no-restricted-syntax
   .fail((message?: string, error?: Error) => {
     if (error) {
-      Logger.critical(error.message);
-      Logger.debug(error.stack);
+      let finalLog = error.message;
+      if (LogLevel.of(Logger.logLevel).isMoreOrAsVerboseAs(LogLevel.DEBUG))
+        finalLog = error.stack ?? error.message;
+      Logger.critical(finalLog);
       process.exit(1);
     }
 
