@@ -37,7 +37,7 @@
         "#lib/*": "./dist/lib/*.js"
     },
     "scripts": {
-        "start": "node dist/src/cli.js",
+        "start": "node --enable-source-maps dist/src/cli.js",
         "build": "tsc && rimraf dist/package.json",
         "test": "vitest --dir test run --silent passed-only",
         "test:watch": "vitest --dir test watch --cache --silent passed-only",
