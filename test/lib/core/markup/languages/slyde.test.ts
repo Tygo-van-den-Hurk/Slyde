@@ -10,17 +10,6 @@ describe('class SlydeMarkup extends MarkupRender', () => {
     expect(expected).toBe(result);
   });
 
-  const markers = ['*', '/', '^', '_', '`', '~'] as const;
-
-  const tags: Record<(typeof markers)[number], { open: string; close: string }> = {
-    '*': { close: '</b>', open: '<b>' },
-    '/': { close: '</i>', open: '<i>' },
-    '^': { close: '</sup>', open: '<sup>' },
-    _: { close: '</u>', open: '<u>' }, // eslint-disable-line id-length
-    '`': { close: '</code>', open: '<code>' },
-    '~': { close: '</s>', open: '<s>' },
-  };
-
   test('rendering latex using the latex renderer', () => {
     const input = `{x\\over2}`;
     const result = new SlydeMarkupRenderer().render(`$$${input}$$`);
@@ -30,14 +19,81 @@ describe('class SlydeMarkup extends MarkupRender', () => {
     expect(normalized(result)).toBe(normalized(expected));
   });
 
+  test('rendering invalid latex throws', () => {
+    const input = `{x\\over2`;
+    const renderer = new SlydeMarkupRenderer();
+    const fn = (): string => renderer.render(`$$${input}$$`);
+    expect(fn).toThrow();
+  });
+
+  test('rendering invalid latex throws', () => {
+    const input = `{x\\over2`;
+    const renderer = new SlydeMarkupRenderer();
+    const fn = (): string => renderer.render(`$$${input}$$`);
+    expect(fn).toThrow();
+  });
+
   test('rendering link', () => {
     const input = `[this](http://example.com)`;
     const result = new SlydeMarkupRenderer().render(input);
     expect(result).toBe(`<a href="http://example.com">this</a>`);
   });
 
+  test('rendering italic and urls', () => {
+    const input = `this is an //HTTP// URL: http://example.com.`;
+    const expected = `this is an <em>HTTP</em> URL: <a href="http://example.com">http://example.com</a>.`;
+    const result = new SlydeMarkupRenderer().render(input);
+    expect(result).toBe(expected);
+  });
+
+  test('rendering tags inside of HTML', () => {
+    const input = `<div> **strong** </div>`;
+    const expected = `<div> <strong>strong</strong> </div>`;
+    const result = new SlydeMarkupRenderer().render(input);
+    expect(result).toBe(expected);
+  });
+
   test('images are not rendered out', () => {
     const input = `![this](http://example.com)`;
+    const result = new SlydeMarkupRenderer().render(input);
+    expect(result).toBe(input);
+  });
+
+  test('horizontal rulers are not rendered out', () => {
+    const input = `this is a example:\n\n---\n\nwhich should not be rendered out.`;
+    const result = new SlydeMarkupRenderer().render(input);
+    expect(result).toBe(input);
+  });
+
+  test('lists are not rendered out', () => {
+    const input1 = `- this is a list item\n- which should not be rendered out.`;
+    const result1 = new SlydeMarkupRenderer().render(input1);
+    expect(result1).toBe(input1);
+    const input2 = `- this is a **list** item\n- which should not be rendered out.\n- The the internal markdown should.`;
+    const result2 = new SlydeMarkupRenderer().render(input2);
+    expect(result2).not.toBe(input2);
+  });
+
+  test('codeblocks are not rendered out', () => {
+    const input = '```\nthis is a codeblock\nthat should not be rendered.\n```';
+    const result = new SlydeMarkupRenderer().render(input);
+    expect(result).toBe(input);
+  });
+
+  test('headings are not rendered out', () => {
+    const input = '# heading\n';
+    const result = new SlydeMarkupRenderer().render(input);
+    expect(result).toBe(input);
+  });
+
+  test('code spans are not rendered out', () => {
+    const input = 'this is a code span that should `not` be rendered';
+    const result = new SlydeMarkupRenderer().render(input);
+    expect(result).toBe(input);
+  });
+
+  test('blockquotes are not rendered out', () => {
+    const input = `> this is a blockquote,\n> that should not be rendered.`;
     const result = new SlydeMarkupRenderer().render(input);
     expect(result).toBe(input);
   });
@@ -48,11 +104,16 @@ describe('class SlydeMarkup extends MarkupRender', () => {
     expect(result).toBe(input);
   });
 
-  test('rendering italic and urls', () => {
-    const input = `this is an HTTP URL: http://example.com/ this is an HTTPS URL: https://example.com/`;
-    const result = new SlydeMarkupRenderer().render(input);
-    expect(result).toBe(input);
-  });
+  const markers = ['*', '/', '^', '_', '`', '~'] as const;
+
+  const tags: Record<(typeof markers)[number], { open: string; close: string }> = {
+    '*': { close: '</strong>', open: '<strong>' },
+    '/': { close: '</em>', open: '<em>' },
+    '^': { close: '</sup>', open: '<sup>' },
+    _: { close: '</u>', open: '<u>' }, // eslint-disable-line id-length
+    '`': { close: '</code>', open: '<code>' },
+    '~': { close: '</s>', open: '<s>' },
+  };
 
   for (const marker of markers) {
     /// Limit test cases when debugging to not get overwhelmed:

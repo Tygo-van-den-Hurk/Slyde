@@ -31,10 +31,51 @@ describe('class MarkdownRenderer extends MarkupRender', () => {
     expect(normalized(result)).toBe(normalized(expected));
   });
 
+  test('rendering invalid latex throws', () => {
+    const input = `{x\\over2`;
+    const renderer = new MarkdownRenderer();
+    const fn = (): string => renderer.render(`$${input}$`);
+    expect(fn).toThrow();
+  });
+
   test(`rendering a marked for bold word`, () => {
     const input = `**word**`;
     const result = new MarkdownRenderer().render(input);
     expect(result).toBe(`<strong>word</strong>`);
+  });
+
+  test('rendering tags inside of HTML', () => {
+    const input = `<div> **strong** </div>`;
+    const expected = `<div> <strong>strong</strong> </div>`;
+    const result = new MarkdownRenderer().render(input);
+    expect(result).toBe(expected);
+  });
+
+  test('horizontal rulers are not rendered out', () => {
+    const input = `this is a example:\n\n---\n\nwhich should not be rendered out.`;
+    const result = new MarkdownRenderer().render(input);
+    expect(result).toBe(input);
+  });
+
+  test('lists are not rendered out', () => {
+    const input1 = `- this is a list item\n- which should not be rendered out.`;
+    const result1 = new MarkdownRenderer().render(input1);
+    expect(result1).toBe(input1);
+    const input2 = `- this is a **list** item\n- which should not be rendered out.\n- The the internal markdown should.`;
+    const result2 = new MarkdownRenderer().render(input2);
+    expect(result2).not.toBe(input2);
+  });
+
+  test(`Headers are not rendered`, () => {
+    const input = `# Header`;
+    const result = new MarkdownRenderer().render(input);
+    expect(result).toBe(input);
+  });
+
+  test('blockquotes are not rendered out', () => {
+    const input = `> this is a blockquote,\n> that should not be rendered.`;
+    const result = new MarkdownRenderer().render(input);
+    expect(result).toBe(input);
   });
 
   test(`rendering a marked for bold word inside of a sentence"`, () => {
