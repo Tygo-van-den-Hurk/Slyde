@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
+import type { ComponentInterface } from '#lib/core/components';
 import transform from '#lib/core/components/utils/transform';
-import { ComponentInterface, ComponentRenderArguments } from '#lib/core/components';
 
 const fakeContext = {
   attributes: {},

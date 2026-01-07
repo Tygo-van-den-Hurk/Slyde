@@ -1,6 +1,5 @@
 import { Marked, type RendererObject } from 'marked';
 import { Component } from '#lib/core/components/class';
-import { Logger } from '#lib/logger';
 
 /**
  * A component that shows the keys in an array of objects.

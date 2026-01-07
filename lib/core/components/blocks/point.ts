@@ -1,5 +1,4 @@
 import { Component } from '#lib/core/components/class';
-import type { RequireAll } from '#lib/types';
 
 const symbolMap = {
   arrow: '&rarr;',
