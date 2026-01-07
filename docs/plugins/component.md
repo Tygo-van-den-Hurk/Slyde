@@ -15,6 +15,8 @@ export default ({ Component }) => Component.register(
 );
 ```
 
+Now that you've added your own `Component` plugin you can simply use it using its's ID as the element name. Like so: `<my-component />`, or `<MyComponent>`, or one of its many automatically generated aliases.
+
 ## Adding Fields or Functions
 
 You might want your component to use attributes. You store those in fields. To add fields, you can use the component extract utility as follows:
@@ -62,18 +64,6 @@ There are a couple alterations to it though:
 ## Interfaces
 
 There are a couple of requirements for any instance of `Component`. The functions/fields you'll need to implement can be found in the [`#lib/core/components/interfaces.ts.`](https://github.com/Tygo-van-den-Hurk/Slyde/blob/main/lib/core/components/interfaces.ts) file. Depending on the version you have installed these requirements might be different then that the links says. Check both major versions to find out if they are compatible.
-
-## How to use
-
-Now that you've added your own `Component` plugin you can simply use it using its's ID as the element name. Like so:
-
-```XML
-<presentation>
-  <slide>
-    <my-component />
-  </slide>
-</presentation>
-```
 
 ## Overriding existing Components
 
