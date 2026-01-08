@@ -1,4 +1,10 @@
 name: Label Pull Requests
+# Labels a pull request by all the commit types. So if a PR contains the
+# following commits: `feat: xyz`, `test: xyz`, and `docs: xyz` then this
+# pull request will get the `feat`, `test`, and `docs` labels.
+#
+# Future features:
+#   add `BREAKING CHANGE` label when a commit says it is a breaking change.
 
 on:
   pull_request_target:
