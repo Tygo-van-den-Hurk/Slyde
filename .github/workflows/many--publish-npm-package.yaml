@@ -1,10 +1,15 @@
-name: Publish package to GitHub Packages
+name: Publish package to registries
+# Publishes the newest version of the package to both NPM and GitHub packages.
+# If the workflow is triggered because of a tag push it will push that tag,
+# but if the trigger is a regular commit push, then it will push an alpha
+# release.
 
 on:
   push:
     tags: [v*.*.*]
     branches: [main, master, release, development]
     paths:
+      - .github/workflows/many--publish-npm-package.yaml
       - test/**
       - lib/**
       - src/**
@@ -15,16 +20,16 @@ on:
       - '*eslint*'
       - '*prettier*'
 
-permissions:
-  contents: read
-  packages: write
-
 jobs:
   build:
-    name: Publish new NPM package
+    name: Build new package version
     runs-on: ubuntu-latest
-    env:
-      NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    outputs:
+      is_release: ${{ steps.version.outputs.is_release }}
+      npm_tag: ${{ steps.version.outputs.npm_tag }}
+      package_version: ${{ steps.package.outputs.version }}
+      package_name: ${{ steps.package.outputs.name }}
+      artifact_name: ${{ steps.artifact-name.outputs.name }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6.0.1
@@ -33,17 +38,16 @@ jobs:
         with:
           node-version: 24
           cache-dependency-path: package-lock.json
-          registry-url: 'https://npm.pkg.github.com'
           cache: 'npm'
       - name: Read `package.json` file and output contents
         id: package
         run: |
-            version=$(node --print "require('#package').version")
-            echo "version=$version" >> $GITHUB_OUTPUT
-            echo "PACKAGE_VERSION=$version" >> $GITHUB_ENV
-            name=$(node --print "require('#package').name")
-            echo "name=$name" >> $GITHUB_OUTPUT
-            echo "PACKAGE_NAME=$name" >> $GITHUB_ENV
+          version=$(node --print "require('./package.json').version")
+          echo "version=$version" >> $GITHUB_OUTPUT
+          echo "PACKAGE_VERSION=$version" >> $GITHUB_ENV
+          name=$(node --print "require('./package.json').name")
+          echo "name=$name" >> $GITHUB_OUTPUT
+          echo "PACKAGE_NAME=$name" >> $GITHUB_ENV
       - name: Determine version and tag
         id: version
         run: |
@@ -83,17 +87,65 @@ jobs:
           sed --in-place '/<badges-container/,/<\/badges-container>/d' README.md
           sed --in-place '/<toc-section/,/<\/toc-section>/d' README.md
           sed --in-place '/<contributing-section/,/<\/contributing-section>/d' README.md
-      - name: Publish NPM package to registry (tags)
-        if: steps.version.outputs.is_release == 'true'
+      - name: artifact name
+        id: artifact-name
+        run: echo "name=${{ github.sha }}-${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v6.0.0
+        with:
+          name: ${{ steps.artifact-name.outputs.name }}
+          if-no-files-found: 'error'
+          retention-days: 1
+          include-hidden-files: true
+          path: |
+            dist
+            package.json
+            package-lock.json
+            README.md
+            LICENSE
+
+  publish:
+    name: Publish to ${{ matrix.registry_name }}
+    runs-on: ubuntu-latest
+    needs: build
+    strategy:
+      matrix:
+        include:
+          - registry_name: NPM
+            registry_url: https://registry.npmjs.org
+          - registry_name: GitHub
+            registry_url: https://npm.pkg.github.com
+      fail-fast: true
+    permissions:
+      id-token: write
+      contents: read
+      packages: write
+    env:
+      PACKAGE_NAME: ${{ needs.build.outputs.package_name }}
+      PACKAGE_VERSION: ${{ needs.build.outputs.package_version }}
+    steps:
+      - name: Set up Node.js
+        uses: actions/setup-node@v6.1.0
+        with:
+          node-version: 24
+          registry-url: ${{ matrix.registry_url }}
+      - name: Download build artifact
+        uses: actions/download-artifact@v7.0.0
+        with: 
+          name: ${{ needs.build.outputs.artifact_name }}
+      - name: Configure npm auth
+        if: ${{ matrix.registry_name == 'GitHub' }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          npm publish --tag ${{ steps.version.outputs.npm_tag }}
-          IFS='.' read -r MAJOR MINOR PATCH <<< "$PACKAGE_VERSION"
-          npm dist-tag add "$PACKAGE_NAME@$PACKAGE_VERSION" "$MAJOR.$MINOR"
-          npm dist-tag add "$PACKAGE_NAME@$PACKAGE_VERSION" "$MAJOR"
-      - name: Publish NPM package to registry (push)
-        if: steps.version.outputs.is_release != 'true'
+          echo "//npm.pkg.github.com/:_authToken=$NODE_AUTH_TOKEN" > ~/.npmrc
+          echo "NODE_AUTH_TOKEN=$NODE_AUTH_TOKEN" >> "$GITHUB_ENV"
+      - name: Publish package
         run: |
-          SHORT_SHA=${GITHUB_SHA:0:7}
-          npm version prerelease --preid=alpha-$SHORT_SHA --no-git-tag-version
-          npm publish --tag ${{ steps.version.outputs.npm_tag }}
-      
+          if [ "${{ needs.build.outputs.is_release }}" = "true" ]; then
+            npm publish --registry ${{ matrix.registry_url }} --tag ${{ needs.build.outputs.npm_tag }}
+          else
+            SHORT_SHA=${GITHUB_SHA:0:7}
+            npm version prerelease --preid=${{ needs.build.outputs.npm_tag }}-$SHORT_SHA --no-git-tag-version
+            npm publish --registry ${{ matrix.registry_url }} --tag ${{ needs.build.outputs.npm_tag }}
+          fi
