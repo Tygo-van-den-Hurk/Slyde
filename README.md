@@ -1,4 +1,4 @@
-<div align="center">
+<header align="center">
   <picture>
     <source srcset="./docs/assets/logo-standalone.svg" media="(max-width: 600px)">
     <img src="./docs/assets/logo-with-text.svg" width="50%" alt="the Slyde logo">
@@ -71,7 +71,7 @@
       </picture>
     </a>
   </badges-container>
-</div>
+</header>
 
 <toc-section data-why="So that we can remove it before publishing an image or npm package.">
 
