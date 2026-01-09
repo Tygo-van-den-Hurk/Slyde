@@ -83,7 +83,7 @@ jobs:
         include:
           - name: GitHub Container Registry
             server: ghcr.io
-            environment: ghcr
+            environment: ${{ github.ref_type == 'tag' && 'production' || 'staging' }}-ghcr
             username: ${{ github.actor }}
             repository: ${{ github.event.repository.name }}
             password: GITHUB_TOKEN

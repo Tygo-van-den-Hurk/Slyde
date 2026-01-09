@@ -114,10 +114,10 @@ jobs:
         include:
           - registry_name: NPM
             registry_url: https://registry.npmjs.org
-            environment: npm
+            environment: ${{ github.ref_type == 'tag' && 'production' || 'staging' }}-npm
           - registry_name: GitHub
             registry_url: https://npm.pkg.github.com
-            environment: github-npm
+            environment: ${{ github.ref_type == 'tag' && 'production' || 'staging' }}-github-npm
       fail-fast: true
     permissions:
       id-token: write
