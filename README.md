@@ -137,7 +137,7 @@ To install Slyde using npm from [GitHub' NPM registry](https://npm.pkg.github.co
 To install and run slyde using [docker](http://docker.com), run the following command:
 
 ```Shell
-docker run --interactive --tty --volume "$PWD:/pwd" --rm ghcr.io/tygo-van-den-hurk/slyde:latest compile /pwd/slyde.xml --output /pwd/slyde.html
+docker run -it --volume "$PWD:/pwd" --rm ghcr.io/tygo-van-den-hurk/slyde:latest compile
 ```
 
 ### Building from source
