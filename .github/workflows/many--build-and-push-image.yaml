@@ -52,8 +52,8 @@ jobs:
             tags="$VERSION,$MAJOR.$MINOR.$PATCH,$MAJOR.$MINOR,$MAJOR"
             echo "tags=$tags" >> $GITHUB_OUTPUT
           else
-            echo "full_tag=latest" >> $GITHUB_OUTPUT
-            echo "tags=latest" >> $GITHUB_OUTPUT
+            echo "full_tag=unstable" >> $GITHUB_OUTPUT
+            echo "tags=unstable" >> $GITHUB_OUTPUT
           fi
       - name: Build docker image
         run: docker build --target "$TARGET" --tag "$IMAGE" .

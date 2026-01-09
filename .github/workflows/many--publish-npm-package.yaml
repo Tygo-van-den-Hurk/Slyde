@@ -1,8 +1,8 @@
 name: Publish package to registries
 # Publishes the newest version of the package to both NPM and GitHub packages.
 # If the workflow is triggered because of a tag push it will push that tag,
-# but if the trigger is a regular commit push, then it will push an alpha
-# release.
+# but if the trigger is a regular commit push, then it will push an unstable
+# tag.
 
 on:
   push:
@@ -56,7 +56,7 @@ jobs:
             echo "npm_tag=latest" >> $GITHUB_OUTPUT
             echo "is_release=true" >> $GITHUB_OUTPUT
           else
-            echo "npm_tag=alpha" >> $GITHUB_OUTPUT
+            echo "npm_tag=unstable" >> $GITHUB_OUTPUT
             echo "is_release=false" >> $GITHUB_OUTPUT
           fi
       - name: Verify tag matches package.json
