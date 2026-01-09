@@ -7,6 +7,7 @@ on:
     tags: [v*.*.*]
     branches: [main, master, release, development]
     paths: 
+      - .github/workflows/many--build-and-push-image.yaml
       - test/**
       - lib/**
       - src/**
@@ -18,65 +19,100 @@ on:
       - '*prettier*'
       - '*[Dd]ocker*'
 
-permissions:
-  contents: read
-  packages: write
+env:  
+  IMAGE: image
+  TARGET: production
 
 jobs:
   build:
-    name: build and push container image
+    name: Build Container Image
     runs-on: ubuntu-latest
-    env:
-      PASSWORD: ${{ secrets.GITHUB_TOKEN }}
-      REPO: ${{ github.event.repository.name }}
-      USER: ${{ github.actor }}
-      TARGET: production
-      SERVER: ghcr.io
+    outputs:
+      artifact_name: ${{ steps.artifact-name.outputs.name }}
+      full_tag: ${{ steps.vars.outputs.full_tag }}
+      tags: ${{ steps.vars.outputs.tags }}
     steps:
-      - name: Make lower case image environment variable
-        run: |
-          # images need to be lower case
-          full="$SERVER/$USER/$REPO"
-          echo "IMAGE=${full,,}" >> $GITHUB_ENV
       - name: Checkout repository
         uses: actions/checkout@v6.0.1
-        with: { fetch-depth: 0 }
-      - name: Log in to GitHub Container Repository
-        run: docker login "$SERVER" --username "$USER" --password "$PASSWORD"
       - name: Get image tags
         id: vars
+        shell: bash
         run: |
+          # if tag is pushed then:
           if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
             # Remove refs/tags/ from the github ref  
             FULL_TAG="${GITHUB_REF#refs/tags/}"
-            echo "full_tag=$FULL_TAG" >> $GITHUB_OUTPUT
             # Remove leading 'v' if present
             VERSION="${FULL_TAG#v}"
+            echo "full_tag=$VERSION" >> $GITHUB_OUTPUT
             # Remove pre-release or build metadata (anything after '-')
             VERSION="${VERSION%%-*}"
-            # Split version like "1.2.3" into "1.2.3", "1.2", "1"
+            # Split version like "1.2.3-rc.1" into "1.2.3-rc.1", "1.2.3", "1.2", and "1"
             IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
-            tags="$MAJOR.$MINOR.$PATCH,$MAJOR.$MINOR,$MAJOR"
+            tags="$VERSION,$MAJOR.$MINOR.$PATCH,$MAJOR.$MINOR,$MAJOR"
             echo "tags=$tags" >> $GITHUB_OUTPUT
           else
             echo "full_tag=latest" >> $GITHUB_OUTPUT
             echo "tags=latest" >> $GITHUB_OUTPUT
           fi
       - name: Build docker image
-        run: |
-          tag="$IMAGE:${{ steps.vars.outputs.full_tag }}"
-          docker build --target "$TARGET" --tag "$tag" .
+        run: docker build --target "$TARGET" --tag "$IMAGE" .
       - name: Basic container runtime test
-        run: docker run --rm "$IMAGE:${{ steps.vars.outputs.full_tag }}" -- --help
-      - name: Tag docker image with multiple tags
+        run: docker run --rm "$IMAGE" -- --help
+      - name: Save image to disk
+        run: docker save "$IMAGE" | gzip > image.tar.gz
+      - name: Creating unique artifact name
+        id: artifact-name
+        run: echo "name=${{ github.sha }}-${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v6.0.0
+        with:
+          name: ${{ steps.artifact-name.outputs.name }}
+          if-no-files-found: 'error'
+          retention-days: 1
+          include-hidden-files: true
+          path: image.tar.gz
+
+  deploy:
+    name: Deploy to ${{ matrix.name }}
+    environment: ${{ matrix.environment }}
+    runs-on: ubuntu-latest
+    needs: build
+    strategy:
+      matrix:
+        include:
+          - name: GitHub Container Registry
+            server: ghcr.io
+            environment: ghcr
+            username: ${{ github.actor }}
+            repository: ${{ github.event.repository.name }}
+            password: GITHUB_TOKEN
+            prefix: ghcr.io/
+      fail-fast: true
+    permissions:
+      contents: read
+      packages: write
+    env:
+      SERVER: ${{ matrix.server }}
+      REPO: ${{ github.event.repository.name }}
+      USER: ${{ matrix.username }}
+      PREFIX: ${{ matrix.prefix }}
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v7.0.0
+        with: 
+          name: ${{ needs.build.outputs.artifact_name }}
+      - name: Load image from disk
+        run: docker load < image.tar.gz
+      - name: Log in to Container Repository (${{ matrix.server }})
+        run: docker login "$SERVER" --username "$USER" --password "$PASSWORD"
+        env:
+          PASSWORD: ${{ secrets[matrix.password] }}
+      - name: Tag docker image with aliases and push
         run: |
-          for tag in $(echo "${{ steps.vars.outputs.tags }}" | tr ',' ' '); do
-            image="$IMAGE:${{ steps.vars.outputs.full_tag }}"
-            alias="$IMAGE:$tag"
-            docker tag "$image" "$alias"
-          done
-      - name: Push created image to registry
-        run: |
-          for tag in $(echo "${{ steps.vars.outputs.tags }}" | tr ',' ' '); do
-            docker push "$IMAGE:$tag"
+          for tag in $(echo "${{ needs.build.outputs.tags }}" | tr ',' ' '); do
+            alias="$PREFIX$USER/$REPO:$tag"
+            alias="${alias,,}" # images must be lowercase
+            docker tag "$IMAGE" "$alias"
+            docker push "$alias"
           done 
