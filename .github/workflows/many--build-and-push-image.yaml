@@ -87,7 +87,6 @@ jobs:
             username: ${{ github.actor }}
             repository: ${{ github.event.repository.name }}
             password: GITHUB_TOKEN
-            prefix: ghcr.io/
       fail-fast: true
     permissions:
       contents: read
@@ -111,7 +110,7 @@ jobs:
       - name: Tag docker image with aliases and push
         run: |
           for tag in $(echo "${{ needs.build.outputs.tags }}" | tr ',' ' '); do
-            alias="$PREFIX$USER/$REPO:$tag"
+            alias="$SERVER/$USER/$REPO:$tag"
             alias="${alias,,}" # images must be lowercase
             docker tag "$IMAGE" "$alias"
             docker push "$alias"
