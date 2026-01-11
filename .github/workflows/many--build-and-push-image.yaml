@@ -95,18 +95,15 @@ jobs:
       SERVER: ${{ matrix.server }}
       REPO: ${{ github.event.repository.name }}
       USER: ${{ matrix.username }}
-      PREFIX: ${{ matrix.prefix }}
     steps:
       - name: Download build artifact
         uses: actions/download-artifact@v7.0.0
-        with: 
-          name: ${{ needs.build.outputs.artifact_name }}
+        with: { name: "${{ needs.build.outputs.artifact_name }}" }
       - name: Load image from disk
         run: docker load < image.tar.gz
       - name: Log in to Container Repository (${{ matrix.server }})
         run: docker login "$SERVER" --username "$USER" --password "$PASSWORD"
-        env:
-          PASSWORD: ${{ secrets[matrix.password] }}
+        env: { PASSWORD: "${{ secrets[matrix.password] }}" }
       - name: Tag docker image with aliases and push
         run: |
           for tag in $(echo "${{ needs.build.outputs.tags }}" | tr ',' ' '); do
@@ -115,3 +112,31 @@ jobs:
             docker tag "$IMAGE" "$alias"
             docker push "$alias"
           done 
+      - name: Delete untagged versions on GHCR
+        if: ${{ matrix.server == 'ghcr.io' }}
+        env: 
+          PACKAGE: "slyde"
+          GH_TOKEN: "${{ github.token }}"
+        run: |
+          now=$(date +%s)
+          accept='Accept: application/vnd.github+json'
+          version='X-GitHub-Api-Version: 2022-11-28'
+
+          endpoint="/users/$USER/packages/container/$PACKAGE/versions"
+          images=$(gh api --header "$accept" --header "$version" "$endpoint")
+          filter='.[] | select(.metadata.container.tags | length == 0)'
+          untagged=$(echo "$images" | jq --compact-output "$filter")
+          
+          for image in $untagged; do # delete all packages without tags
+            id=$(echo "$image" | jq --raw-output '.id')
+            
+            updated_at=$(echo "$image" | jq --raw-output '.updated_at')
+            updated_ts=$(date --date="$updated_at" '+%s')
+            age_days=$(( (now - updated_ts) / (60*60*24) ))
+            if [ "$age_days" -ge "7" ]; then
+              echo "Deleting container by id: $id, and with age: $age_days."
+              endpoint="/users/$USER/packages/container/$PACKAGE/versions/$id"
+              gh api --method DELETE --header "$accept" \
+                --header "$version" "$endpoint"
+            fi
+          done
