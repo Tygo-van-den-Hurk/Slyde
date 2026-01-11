@@ -87,6 +87,8 @@ jobs:
           sed --in-place '/<badges-container/,/<\/badges-container>/d' README.md
           sed --in-place '/<toc-section/,/<\/toc-section>/d' README.md
           sed --in-place '/<contributing-section/,/<\/contributing-section>/d' README.md
+      - name: Remove test files from final package
+        run: rm dist/vitest.* --recursive dist/test --force
       - name: artifact name
         id: artifact-name
         run: echo "name=${{ github.sha }}-${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
@@ -134,12 +136,10 @@ jobs:
           registry-url: ${{ matrix.registry_url }}
       - name: Download build artifact
         uses: actions/download-artifact@v7.0.0
-        with: 
-          name: ${{ needs.build.outputs.artifact_name }}
+        with: { name: "${{ needs.build.outputs.artifact_name }}" }
       - name: Configure npm auth
         if: ${{ matrix.registry_name == 'GitHub' }}
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        env: { NODE_AUTH_TOKEN: "${{ secrets.GITHUB_TOKEN }}" }
         run: |
           echo "//npm.pkg.github.com/:_authToken=$NODE_AUTH_TOKEN" > ~/.npmrc
           echo "NODE_AUTH_TOKEN=$NODE_AUTH_TOKEN" >> "$GITHUB_ENV"
