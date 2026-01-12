@@ -43,7 +43,7 @@ jobs:
           args: >
             --glob-ignore-case **/*.{md,markdown,html,htm}
             --verbose --max-concurrency 1 --hidden --cache
-            --max-cache-age 1d 
+            --max-cache-age 1d --exclude-path docs/overrides
       - name: Save lychee cache
         uses: actions/cache/save@v5.0.1
         with:

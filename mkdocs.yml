@@ -9,6 +9,7 @@ theme:
   name: shadcn
   icon: assets/logo-standalone.svg
   favicon: assets/logo-standalone.svg
+  custom_dir: docs/overrides
   show_title: true
   show_stargazers: false
   pygments_style:

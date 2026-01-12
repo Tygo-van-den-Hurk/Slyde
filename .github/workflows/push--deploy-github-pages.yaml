@@ -44,8 +44,9 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           args: >
             docs --no-progress --hidden --verbose
+            --exclude-path docs/overrides
             --cache --max-cache-age 1d
-            --max-concurrency 1
+            --max-concurrency 1  
       - name: Save lychee cache
         uses: actions/cache/save@v5.0.1
         with:
