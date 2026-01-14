@@ -1,12 +1,11 @@
-/* eslint-disable @typescript-eslint/strict-boolean-expressions, no-ternary */
-
-import {
-  type SlydeHtmlDocumentCssProperties,
-  baseCSS,
-  baseTailwind,
-  tailwindConfig,
-} from '#browser/css';
-import { setupScriptCode } from '#browser/page-logic.browser';
+import type { SlydeHtmlDocumentCssProperties } from '#browser/css/types';
+import { baseCSS } from '#browser/css/modes/base';
+import inputBindingScript from '#browser/scripts/input-bindings';
+import pdfModeScript from '#browser/scripts/pdf-mode';
+import { pdfModeStyle } from '#browser/css/modes/pdf';
+import slideControlScript from '#browser/scripts/slide-control';
+import { tailwindConfig } from '#browser/css/tw-config';
+import utilsScript from '#browser/scripts/utils';
 
 /** The properties a  */
 export interface SlydeHtmlDocumentHtmlProperties extends SlydeHtmlDocumentCssProperties {
@@ -37,14 +36,15 @@ export const htmlDocument = function htmlDocument(args: SlydeHtmlDocumentHtmlPro
     <!DOCTYPE html>
     <html lang="en">
       <head>
-        <style> ${baseCSS({ ...args })} </style>
-        ${baseTailwind()}
         <title>${args.title}</title>
         <!-- TODO: wget this script and then inject it as a string instead. -->
-        <script> const Logger = Object.freeze({ ...console, critical: console.error }); </script>
         <script src="https://cdn.tailwindcss.com"></script>
         <script id="tailwind-config-setup"> tailwind.config = ${JSON.stringify(tailwindConfig({ ...args }))}; </script>
-        <script id="event-listening-setup" type="module">${setupScriptCode}</script>
+        <script> const Logger = Object.freeze({ ...console, critical: console.error }); </script>
+        <script type="module">${utilsScript}</script>
+        <script type="module">${slideControlScript}</script>
+        <script type="module">${pdfModeScript}</script>
+        <script type="module">${inputBindingScript}</script>
         <meta charset="UTF-8">
         <meta name="darkreader-lock">
         <meta property="og:title" content="${args.title}">
@@ -55,11 +55,14 @@ export const htmlDocument = function htmlDocument(args: SlydeHtmlDocumentHtmlPro
         <meta name="authors" content="${args.authors.join(',')}">
         <meta name="msapplication-TileImage" content="${args.icon}" />
         <meta name="msapplication-TileColor" content="${args.background}" />
-        <!-- <meta http-equiv="Content-Security-Policy" content="connect-src 'none'; script-src 'self' ${args.nonce ? `'nonce-${args.nonce}'` : ''};"> -->
+        <!-- <meta http-equiv="Content-Security-Policy" content="connect-src 'none'; script-src 'self' ${((args.nonce ?? '') !== '' && `'nonce-${args.nonce}'`) || ''};"> -->
         <meta name="theme-color" content="${args.primary}" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
         <link rel="icon" href="${args.icon}">
         <link rel="apple-touch-icon" href="${args.icon}">    
+        <style> ${baseCSS({ ...args })} </style>
+        <style id="dynamic-style">${pdfModeStyle}</style>
+        <noscript><style id="pdf-mode-style">${pdfModeStyle}</style></noscript>
       </head>
       <body>
         ${args.content}
