@@ -24,7 +24,6 @@ script += `window.${toggleFullScreen.name} = ${toggleFullScreen.toString()};\n`;
 
 declare global {
   interface Window {
-    /** Checks if the document is supposed to viewed as a PDF. */
     toggleFullScreen: typeof toggleFullScreen;
   }
 }

@@ -116,6 +116,46 @@ export const setupUrlHashCallBack = function setupUrlHashCallBack(): void {
 
 script += `window.addEventListener("load", ${setupUrlHashCallBack.toString()});\n`;
 
+/** Gets the size of one `--unit` in pixels. */
+export const getUnit = function getUnit(): number {
+  const element = document.createElement('div');
+  element.style.position = 'absolute';
+  element.style.visibility = 'hidden';
+  element.style.height = 'var(--unit)';
+  document.body.appendChild(element);
+  const pixels = element.getBoundingClientRect().height;
+  document.body.removeChild(element);
+  return pixels;
+};
+
+script += `const ${getUnit.name} = ${getUnit.toString()};\n`;
+
+/** Scrolls the window down by `amount * --unit` in pixels. */
+export const scrollDownToSlide = function scrollDownToSlide(slide: number): void {
+  const indexing = 1,
+    margin = 1,
+    unit = getUnit();
+  const heightStr = getComputedStyle(document.body).getPropertyValue('--height').trim();
+  const height = Number.parseFloat(heightStr);
+  const pixels = unit * (height + margin) * (slide - indexing);
+  if (Number.isNaN(pixels)) {
+    throw new Error(
+      `Cannot scroll by ${pixels} pixels: margin=${margin}, height=${height}, unit=${unit}, slides=${slide};`
+    );
+  }
+
+  Logger.debug(`Scrolling down to ${pixels} pixels`);
+  document.body.scrollTo({ behavior: 'smooth', left: 0, top: pixels });
+};
+
+script += `const ${scrollDownToSlide.name} = ${scrollDownToSlide.toString()};\n`;
+
+declare global {
+  interface Window {
+    scrollDownToSlide: typeof scrollDownToSlide;
+  }
+}
+
 /**
  *  Watches for changes in the hash of the URL (the # part), and resets the hash if it is incorrect.
  */
@@ -131,6 +171,12 @@ export const handleUrlHashChange = function handleUrlHashChange(
     message += `Resetting it to the old value of ${oldUrl.hash}`;
     Logger.warn(message);
     history.replaceState(null, '', event.oldURL);
+  }
+
+  if (window.isPDF()) {
+    const slide = getCurrentSlideUrlHash();
+    Logger.debug(`in PDF mode, scrolling down to slide ${slide}`);
+    scrollDownToSlide(slide);
   }
 };
 
