@@ -120,11 +120,11 @@ interface MouseHider {
 
 /** Hides mouse cursor when its not moving, shows the mouse cursor when it is. */
 export const handleMouseMove = function handleMouseMove(): void {
-  if (window.isPDF()) return;
-
   const ref = handleMouseMove as MouseHider;
   clearTimeout(ref.hideTimeout);
   document.documentElement.style.cursor = 'default';
+
+  if (window.isPDF()) return;
 
   const oneSecond = 1000;
   ref.hideTimeout = setTimeout(() => {
