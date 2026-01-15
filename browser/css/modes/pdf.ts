@@ -9,7 +9,7 @@ import { Component } from '#lib/core/components/class';
 // eslint-disable-next-line no-inline-comments
 const body = /*CSS*/ `
   body {
-    overflow-x: scroll;
+    overflow: hidden;
     height: 100vh;
   }
 ` as const;

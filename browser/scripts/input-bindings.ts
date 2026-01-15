@@ -59,9 +59,23 @@ script += `window.addEventListener("keydown", ${handleKeyPresses.toString()});\n
 /** Handles scrolling through on the document, and moves slides accordingly. */
 // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
 export const handleScrollEvents = function handleScrollEvents(event: WheelEvent): void {
-  if (window.isPDF()) return;
-  if (event.deltaY < -1) window.goToNextSlide(); // eslint-disable-line @typescript-eslint/no-magic-numbers
-  if (event.deltaY > 1) window.goToPreviousSlide();
+  if (!(event.target instanceof Node)) return;
+  if (!document.body.contains(event.target)) {
+    Logger.debug(`Node ${event.target.nodeName} is outside of body, ignoring scroll.`);
+    return;
+  }
+
+  event.preventDefault();
+
+  const min = 50;
+  const intensity = Math.abs(event.deltaY);
+  if (intensity < min) {
+    Logger.debug(`Intensity ${intensity} not heigh enough to trigger slide movement`);
+    return;
+  }
+
+  if (event.deltaY < 0) window.goToNextSlide();
+  else window.goToPreviousSlide();
 };
 
 script += `window.addEventListener("wheel", ${handleScrollEvents.toString()});\n`;
