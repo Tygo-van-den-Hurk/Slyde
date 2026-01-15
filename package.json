@@ -2,7 +2,7 @@
     "name": "@tygo-van-den-hurk/slyde",
     "license": "GPL-3.0-only",
     "description": "Make beautifully animated Slydes and presentations from XML with ease!",
-    "homepage": "https://Tygo-van-den-Hurk.github.io/Slyde",
+    "homepage": "https://Slyde.js.org",
     "author": "Tygo van den Hurk",
     "version": "0.0.1",
     "private": false,
