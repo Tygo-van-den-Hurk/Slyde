@@ -36,55 +36,56 @@ export class Table extends Component {
     } satisfies Omit<Required<RendererObject>, 'table' | 'tablerow' | 'tablecell' | 'checkbox'>,
   });
 
-  // eslint-disable-next-line no-inline-comments, @typescript-eslint/naming-convention
-  public static readonly style = /* CSS */ `
-    table {
-      --line-width: calc(var(--unit) / 8);
-      --padding-x:  calc(var(--unit) * 2); 
-      --padding-y:  calc(var(--unit) / 2);
+  private static style(id: string): string {
+    // eslint-disable-next-line no-inline-comments
+    return /* CSS */ `
+      #id table {
+        --line-width: calc(var(--unit) / 8);
+        --padding-x:  calc(var(--unit) * 2); 
+        --padding-y:  calc(var(--unit) / 2);
 
-      border-collapse: collapse;
-      border: none;
-      overflow: hidden;
+        border-collapse: collapse;
+        border: none;
+        overflow: hidden;
 
-      margin: var(--unit) auto;
-    }
+        margin: var(--unit) auto;
+      }
 
-    th,
-    td {
-      padding: var(--padding-y) var(--padding-x);
-      border-right: var(--line-width) solid var(--foreground);
-      border-bottom: var(--line-width) solid var(--foreground);
-    }
+      #id th, #id td {
+        padding: var(--padding-y) var(--padding-x);
+        border-right: var(--line-width) solid var(--foreground);
+        border-bottom: var(--line-width) solid var(--foreground);
+      }
 
-    th {
-      text-align: center;
-    }
+      #id th {
+        text-align: center;
+      }
 
-    th:last-child,
-    td:last-child {
-      border-right: none;
-    }
+      #id th:last-child, #id td:last-child {
+        border-right: none;
+      }
 
-    tbody tr:last-child td {
-      border-bottom: none;
-    }
-  `;
+      #id tbody tr:last-child td {
+        border-bottom: none;
+      }
+    `.replaceAll('#id', `#${id}`);
+  }
 
   @Component.utils.children.require
-  // eslint-disable-next-line jsdoc/require-jsdoc, @typescript-eslint/class-methods-use-this
+  // eslint-disable-next-line jsdoc/require-jsdoc
   public async render({ children }: Component.RenderArguments): Promise<string> {
     const input = (children?.() ?? '').split('\n');
     const trimmed = input.map((line) => line.trim()).join('\n');
     const table = await Table.parser.parse(trimmed);
+    const id = `${this.id}-container`;
 
     // eslint-disable-next-line no-inline-comments
     return /*HTML*/ `
-      <div class="block">
-        ${table}
+      <div class="block" id="${id}">
         <style scoped>
-          ${Table.style}
+          ${Table.style(id)}
         </style>
+        ${table}
       </div>
     `;
   }
