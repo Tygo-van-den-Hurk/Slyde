@@ -110,6 +110,10 @@ export const cli = yargs(hideBin(process.argv))
 
   // Middlewares
 
+  .middleware(() => {
+    Logger.info(`Using ${NAME} v${pkg.version}`);
+  })
+
   // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types, prefer-arrow-callback
   .middleware(function setLoglevelOnLogger(argv): void {
     // More verbose for the value of the count of `verbose`:
