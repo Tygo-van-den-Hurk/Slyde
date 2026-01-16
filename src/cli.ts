@@ -284,6 +284,11 @@ export const cli = yargs(hideBin(process.argv))
 
 // If file is being executed instead of sourced:
 
+// eslint-disable-next-line no-console
+console.log({ 'import.meta.url': import.meta.url, 'process.argv[1]': process.argv[1] });
 const fileIndex = 1;
-const isBeingExecuted = import.meta.url === `file://${process.argv[fileIndex]}`;
+const startFile = process.argv[fileIndex];
+const isNotBeingImported = import.meta.url === `file://${startFile}`;
+const npx = startFile.endsWith(path.join('node_modules', '.bin', NAME));
+const isBeingExecuted = isNotBeingImported || npx;
 if (isBeingExecuted) await cli.parse();
