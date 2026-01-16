@@ -133,10 +133,12 @@ export const cli = yargs(hideBin(process.argv))
   .middleware(async function loadPluginsMiddleware(argv): Promise<void> {
     await loadPlugins(argv.plugins);
     Logger.info(`Loaded ${argv.plugins.length} plugins.`);
-    Logger.debug(
-      'Those loaded plugins being:',
-      argv.plugins.map((plugin) => chalk.gray(plugin)).join(', ')
-    );
+    if (argv.plugins.length > 0) {
+      Logger.debug(
+        'Those loaded plugins being:',
+        argv.plugins.map((plugin) => chalk.gray(plugin)).join(', ')
+      );
+    }
   })
 
   // Compile subcommand
