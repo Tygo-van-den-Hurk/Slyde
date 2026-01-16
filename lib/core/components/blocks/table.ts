@@ -77,14 +77,12 @@ export class Table extends Component {
     const input = (children?.() ?? '').split('\n');
     const trimmed = input.map((line) => line.trim()).join('\n');
     const table = await Table.parser.parse(trimmed);
-    const id = `${this.id}-container`;
+    const id = `table-${this.id}-container`;
 
     // eslint-disable-next-line no-inline-comments
     return /*HTML*/ `
       <div class="block" id="${id}">
-        <style scoped>
-          ${Table.style(id)}
-        </style>
+        <style>${Table.style(id)}</style>
         ${table}
       </div>
     `;
