@@ -157,9 +157,6 @@ jobs:
         run: |
           if [ "${{ needs.build.outputs.is_release }}" = "true" ]; then
             npm publish --registry ${{ matrix.registry_url }} --tag ${{ needs.build.outputs.npm_tag }}
-            IFS='.' read -r MAJOR MINOR PATCH <<< "$PACKAGE_VERSION"
-            npm dist-tag add "$PACKAGE_NAME@$PACKAGE_VERSION" "$MAJOR.$MINOR"
-            npm dist-tag add "$PACKAGE_NAME@$PACKAGE_VERSION" "$MAJOR"
           elif [ "${{ needs.build.outputs.is_prerelease }}" = "true" ]; then
             npm version prerelease --preid "${{ needs.build.outputs.npm_tag }}" --no-git-tag-version
             npm publish --registry ${{ matrix.registry_url }} --tag ${{ needs.build.outputs.npm_tag }}
