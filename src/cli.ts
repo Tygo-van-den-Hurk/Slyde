@@ -9,6 +9,7 @@ import chalk from 'chalk';
 import { hideBin } from 'yargs/helpers';
 import { loadPlugins } from '#lib/core/compiler/io';
 import path from 'path';
+import { pathToFileURL } from 'url';
 import pkg from '#package' with { type: 'json' };
 import yargs from 'yargs';
 
@@ -289,12 +290,8 @@ export const cli = yargs(hideBin(process.argv))
   });
 
 // If file is being executed instead of sourced:
-
-// eslint-disable-next-line no-console
-console.log({ 'import.meta.url': import.meta.url, 'process.argv[1]': process.argv[1] });
-const fileIndex = 1;
-const startFile = process.argv[fileIndex];
-const isNotBeingImported = import.meta.url === `file://${startFile}`;
-const npx = startFile.endsWith(path.join('node_modules', '.bin', NAME));
+const startFile = pathToFileURL(process.argv[1]).href;
+const isNotBeingImported = import.meta.url === startFile;
+const npx = startFile.endsWith(`node_modules/.bin/${NAME}`);
 const isBeingExecuted = isNotBeingImported || npx;
 if (isBeingExecuted) await cli.parse();
