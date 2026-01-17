@@ -15,6 +15,17 @@
         "presentation",
         "plugin-support"
     ],
+    "funding": [
+        {
+            "type": "github",
+            "url": "https://github.com/sponsors/Tygo-van-den-Hurk"
+        }
+    ],
+    "support": {
+        "backing": {
+            "npm-funding": true
+        }
+    },
     "repository": {
         "type": "git",
         "url": "git://github.com/Tygo-van-den-Hurk/Slyde.git"
