@@ -11,7 +11,7 @@ import { describe, expect, test } from 'vitest';
 import type { XmlParserElementNode } from 'xml-parser-xo';
 
 describe('function wrapper', () => {
-  const component: Component.Instance = {
+  const component: Component.Interface = {
     attributes: {},
     canBeAtLevel(): never {
       throw new Error('Function not implemented.');
@@ -32,7 +32,7 @@ describe('function wrapper', () => {
     },
     // eslint-disable-next-line no-void
     width: void 0,
-  } satisfies Component.Instance;
+  } satisfies Component.Interface;
 
   const state: RenderState = {
     globals: Globals.instance,

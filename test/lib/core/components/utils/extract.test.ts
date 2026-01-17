@@ -12,22 +12,21 @@ describe('function extract', () => {
     spy.mockReset();
   });
 
+  const error = function error(): never {
+    throw new Error('Function not implemented.');
+  }
+
   const instance = {
     attributes: {},
-    canBeAtLevel(): ReturnType<Component.Interface['canBeAtLevel']> {
-      throw new Error('Function not implemented.');
-    },
+    canBeAtLevel: error,
+    display: '',
     focusMode: 'follows',
-    hierarchy(): ReturnType<Component.Interface['hierarchy']> {
-      throw new Error('Function not implemented.');
-    },
+    hierarchy: error,
     id: '0',
     level: 0,
     name: '',
     path: 'xpath://',
-    render(): ReturnType<Component.Interface['render']> {
-      throw new Error('Function not implemented.');
-    },
+    render: error,
   } satisfies Component.Interface;
 
   test('looking for property that exists', () => {

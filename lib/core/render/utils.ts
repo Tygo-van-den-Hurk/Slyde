@@ -6,7 +6,7 @@ import type { XmlParserElementNode } from 'xml-parser-xo';
 /** Wraps HTML in a `<slyde-component>` This is to make it easier for us to select elements. */
 export const wrapper = function wrapper(
   // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
-  component: Component.Instance,
+  component: Component.Interface,
   state: RenderState,
   children: string
 ): string {

@@ -1,3 +1,13 @@
+/** The levels at which certain types of components live. */
+export interface ComponentLevels {
+  /** The level at which the presentation can be placed. */
+  presentation: number;
+  /** The level at which the slides can be placed. */
+  slide: number;
+  /** The level at which the blocks can be placed. */
+  block: number;
+}
+
 /**
  * The arguments to provide to the constructor of a component.
  */
@@ -87,6 +97,15 @@ export interface ComponentInterface extends ComponentConstructorArguments {
    * will be `Presentation`. It will match the name the class itself has.
    */
   readonly name: string;
+
+  /** The width of this component. */
+  readonly width?: string;
+
+  /** The height of this component. */
+  readonly height?: string;
+
+  /** The maner of displaying this component. */
+  readonly display: string;
 
   /**
    * Render this component to HTML.

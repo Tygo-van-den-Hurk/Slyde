@@ -136,6 +136,7 @@ export const render = async function render(input: XmlParserResult): Promise<str
   const context = {
     attributes: input.root.attributes,
     canBeAtLevel: (): boolean => true,
+    display: '',
     focusMode: 'default',
     hierarchy: (): '*' => '*',
     id: '0',

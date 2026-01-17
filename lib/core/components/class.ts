@@ -3,6 +3,7 @@
 import type {
   ComponentConstructorArguments,
   ComponentInterface,
+  ComponentLevels,
   ComponentRenderArguments,
 } from '#lib/core/components/interfaces';
 import { Logger } from '#lib/logger';
@@ -11,46 +12,65 @@ import componentUtils from '#lib/core/components/utils/index';
 
 /** Incorporates the constructor arguments into itself. */
 const Base = class Component implements ComponentConstructorArguments {
-  /** Utils related to components and their workings. */
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  public static readonly utils = Object.freeze({ ...componentUtils });
-
-  /** The levels of certain components. Used for selectors: `slyde-component[level=1]`. */
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  public static readonly level = Object.freeze({
-    /** The level at which the blocks can be placed. */
-    block: 2,
-    /** The level at which the presentation can be placed. */
-    presentation: 0,
-    /** The level at which the slides can be placed. */
-    slide: 1,
-  });
-
-  public readonly name;
-  public readonly attributes;
-  public readonly focusMode;
-  public readonly level;
-  public readonly path;
-  public readonly id;
+  readonly #name;
+  readonly #attributes;
+  readonly #focusMode;
+  readonly #level;
+  readonly #path;
+  readonly #id;
 
   /**
    * Creates a new `Component` from the arguments provided.
    */
   public constructor(args: ComponentConstructorArguments) {
-    this.name = new.target.name;
     Logger.debug(`constructing ${new.target.name} at ${args.path}`);
-    this.attributes = args.attributes;
-    this.focusMode = args.focusMode;
-    this.level = args.level;
-    this.path = args.path;
-    this.id = args.id;
+    this.#name = new.target.name;
+    this.#attributes = args.attributes;
+    this.#focusMode = args.focusMode;
+    this.#level = args.level;
+    this.#path = args.path;
+    this.#id = args.id;
+  }
+
+  /** Utils related to components and their workings. */
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  public static get utils() {
+    return Object.freeze({ ...componentUtils });
+  }
+
+  /** The levels of certain components. Used for selectors: `slyde-component[level=1]`. */
+  public static get level(): ComponentLevels {
+    return Object.freeze({ block: 2, presentation: 0, slide: 1 });
+  }
+
+  public get name(): ComponentInterface['name'] {
+    return this.#name;
+  }
+
+  public get attributes(): ComponentInterface['attributes'] {
+    return this.#attributes;
+  }
+
+  public get focusMode(): ComponentInterface['focusMode'] {
+    return this.#focusMode;
+  }
+
+  public get level(): ComponentInterface['level'] {
+    return this.#level;
+  }
+
+  public get path(): ComponentInterface['path'] {
+    return this.#path;
+  }
+
+  public get id(): ComponentInterface['id'] {
+    return this.#id;
   }
 };
 
 /** The `Component` base class before the registry is injected. */
 abstract class Component extends Base implements ComponentInterface {
-  /** The width of this component. */
-  public readonly width = Component.utils.extract({
+  readonly #width = Component.utils.extract({
     aliases: ['width', 'w'],
     context: this,
     transform(value, context, key) {
@@ -61,8 +81,7 @@ abstract class Component extends Base implements ComponentInterface {
     },
   });
 
-  /** The height of this component. */
-  public readonly height = Component.utils.extract({
+  readonly #height = Component.utils.extract({
     aliases: ['height', 'h'],
     context: this,
     transform(value, context, key) {
@@ -73,8 +92,7 @@ abstract class Component extends Base implements ComponentInterface {
     },
   });
 
-  /** The maner of displaying this component. */
-  public readonly display = Component.utils.extract({
+  readonly #display = Component.utils.extract({
     aliases: ['display', 'd'],
     context: this,
     fallback: 'block',
@@ -96,8 +114,20 @@ abstract class Component extends Base implements ComponentInterface {
     }
   }
 
+  public get width(): string | undefined {
+    return this.#width;
+  }
+
+  public get height(): string | undefined {
+    return this.#height;
+  }
+
+  public get display(): string {
+    return this.#display;
+  }
+
   public canBeAtLevel(level: number): ReturnType<ComponentInterface['canBeAtLevel']> {
-    const hierarchy = (this as Partial<Pick<this, 'hierarchy'>>).hierarchy?.() ?? '*';
+    const hierarchy = (this as Partial<this>).hierarchy?.() ?? '*';
     if (hierarchy === '*') return true;
     if (hierarchy.includes(level)) return true;
 
@@ -130,6 +160,9 @@ const ComponentWithRegistry = Registry.inject.using({
 declare namespace ComponentWithRegistry {
   /** The type for an instance of a `MarkupRenderer`. */
   export type Instance = Component;
+
+  /** The levels at which certain types of components live. */
+  export type Levels = ComponentLevels;
 
   /**
    * The arguments to provide to the constructor of a component.
