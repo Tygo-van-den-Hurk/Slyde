@@ -11,6 +11,7 @@ body:
     attributes:
       label: What do you want to request?
       description: Feel free to give suggestions on how we might implement this?
+      placeholder: Explain the reason you're creating this issue...
     validations:
       required: true
   - type: checkboxes

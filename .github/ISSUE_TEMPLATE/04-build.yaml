@@ -1,22 +1,30 @@
-name: Documentation issue
-description: Request additions, updates, or improvements to the documentation.
-title: "docs: "
-labels: ["docs"]
+name: Build issue / suggestion
+description: Request additions, updates, or improvements to the build process.
+title: "build: "
+labels: ["build"]
 body:
   - type: markdown
     attributes:
       value: >
-        Thank you for taking the time to submit a documentation request.
+        Thank you for taking the time to submit a build issue / suggestion.
         Please provide clear and concise details to help us address it
         efficiently.
   - type: textarea
     id: request
     attributes:
-      label: Documentation issue
+      label: Build issue / suggestion
       description: >
-        Describe what documentation is missing, outdated, or unclear. Include
-        any suggested changes if relevant.
+        Describe what is broken, or could be improved.
+        Include any suggested changes if relevant.
       placeholder: Explain the reason you're creating this issue...
+    validations:
+      required: true
+  - type: textarea
+    id: version
+    attributes:
+      label: Version
+      description: What version are you running?
+      placeholder: '0.0.0'
     validations:
       required: true
   - type: checkboxes
@@ -29,6 +37,7 @@ body:
         more details.
         (2) that you've searched for similar issues and found no issues that
         described the same issues as this one
+        (3) This is an actual issue and not a request for support.
       options:
         - label: >
            I assert that I have read the [Code of
@@ -37,7 +46,10 @@ body:
           required: true
         - label: > 
             I assert that this is not a [duplicate of an existing
-            issue](https://github.com/Tygo-van-den-Hurk/Slyde/issues?q=label%3A%22docs%22).
+            issue](https://github.com/Tygo-van-den-Hurk/Slyde/issues?q=label%3A%22build%22).
+          required: true
+        - label: >
+            I assert that this is a bug and not a support request.
           required: true
   - type: "markdown"
     attributes:
