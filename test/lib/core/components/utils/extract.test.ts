@@ -14,7 +14,7 @@ describe('function extract', () => {
 
   const error = function error(): never {
     throw new Error('Function not implemented.');
-  }
+  };
 
   const instance = {
     attributes: {},

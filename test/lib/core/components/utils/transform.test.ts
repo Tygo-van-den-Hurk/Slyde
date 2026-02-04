@@ -4,7 +4,7 @@ import transform from '#lib/core/components/utils/transform';
 
 const error = function error(): never {
   throw new Error('Function not implemented.');
-}
+};
 
 const instance = {
   attributes: {},
