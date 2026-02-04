@@ -49,7 +49,7 @@ jobs:
               echo "tags=$VERSION" >> $GITHUB_OUTPUT
             elif [[ "$VERSION" == *.*.* ]]; then
               IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
-              tags="$MAJOR.$MINOR.$PATCH,$MAJOR.$MINOR,$MAJOR"
+              tags="latest,$MAJOR.$MINOR.$PATCH,$MAJOR.$MINOR,$MAJOR"
               echo "tags=$tags" >> $GITHUB_OUTPUT
             else
               echo "Tag: '$VERSION' is not a semver."
