@@ -4,7 +4,7 @@
     "description": "Make beautifully animated Slydes and presentations from XML with ease!",
     "homepage": "https://Slyde.js.org",
     "author": "Tygo van den Hurk",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "private": false,
     "keywords": [
         "cli",
