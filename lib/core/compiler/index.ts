@@ -8,9 +8,6 @@ import { render } from '#lib/core/render/index';
  * The possible options you can provide to the `compile` function.
  */
 export interface CompileArgs {
-  /** The path to output on. */
-  output: string;
-
   /** The path to the file to read and parse. */
   file: string;
 
