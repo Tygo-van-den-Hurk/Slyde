@@ -31,24 +31,24 @@ export const setLogLevelMiddleWare = function setLogLevelMiddleWare(
   Logger.debug(`Set LogLevel to: ${Logger.logLevel}`);
 };
 
-interface disableColorMiddleWareProps {
+interface DisableColorMiddleWareProps {
   readonly color: string;
 }
 
 /** Disables the coloured output when the command is provided. */
 export const disableColorMiddleWare = function disableColorMiddleWare(
-  argv: disableColorMiddleWareProps
+  argv: DisableColorMiddleWareProps
 ): void {
   if (argv.color === 'never') chalk.level = 0;
 };
 
-interface loadPluginsMiddlewareProps {
+interface LoadPluginsMiddlewareProps {
   readonly plugins: readonly string[];
 }
 
 /** Loads the plugins in the given directories */
 export const loadPluginsMiddleware = async function loadPluginsMiddleware(
-  argv: loadPluginsMiddlewareProps
+  argv: LoadPluginsMiddlewareProps
 ): Promise<void> {
   await loadPlugins(argv.plugins);
   Logger.info(`Loaded ${argv.plugins.length} plugins.`);

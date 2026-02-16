@@ -86,21 +86,21 @@ export const cli = yargs(hideBin(process.argv))
     'compile [file]',
     'Compile and then write the results to disk.',
     (arg) => addCompileSubCommandFlags(arg),
-    async (arg) => compileSubCommandCallback(arg),
+    async (arg) => compileSubCommandCallback(arg)
   )
 
   .command(
     'serve [file]',
     'Compile and then serve the results on a webserver.',
     (arg) => addServeSubCommandFlags(arg),
-    async (arg) => serveSubCommandCallback(arg),
+    async (arg) => serveSubCommandCallback(arg)
   )
 
   .command(
     'enumerate [registry]',
     'List all registered keys in a given registry.',
-    addEnumerateSubCommandFlags, 
-    enumerateSubCommandCallback,
+    addEnumerateSubCommandFlags,
+    enumerateSubCommandCallback
   )
 
   // If something goes wrong parsing

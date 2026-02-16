@@ -45,4 +45,4 @@ export const onFail = function onFail(message: string, error?: Readonly<Error>):
 
   Logger.critical('Invalid usage:', message);
   process.exit(1);
-}
+};
