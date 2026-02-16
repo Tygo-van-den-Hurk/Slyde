@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { cli } from '#src/cli';
+import { cli } from '#src/commands/base';
 
 describe('program', () => {
   // Tests relating `program`:
