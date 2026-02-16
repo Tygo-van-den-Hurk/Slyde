@@ -35,7 +35,7 @@ export const addEnumerateSubCommandFlags = function addEnumerateSubCommandFlags<
     });
 };
 
-interface enumerateCallbackProps {
+interface EnumerateCallbackProps {
   readonly registry: string;
   readonly yaml?: boolean;
   readonly json?: boolean;
@@ -43,7 +43,7 @@ interface enumerateCallbackProps {
 
 /** The callback function to exec when the `enumerate` command is given. */
 export const enumerateSubCommandCallback = function enumerateSubCommandCallback(
-  args: enumerateCallbackProps
+  args: EnumerateCallbackProps
 ): void {
   const registry = Registry.retrieve(args.registry);
   if (!registry) {

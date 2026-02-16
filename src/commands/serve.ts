@@ -58,7 +58,7 @@ export const addServeSubCommandFlags = function addServeSubCommandFlags<T>(
 let compiled: string | undefined = '';
 
 /**
- * Serves the responds to the client.
+ * Serves the response to the client.
  */
 export const serveResult = function serveResult(
   request: Request, // eslint-disable-line @typescript-eslint/prefer-readonly-parameter-types
