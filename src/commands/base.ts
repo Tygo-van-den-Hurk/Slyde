@@ -38,13 +38,7 @@ export const cli = yargs(hideBin(process.argv))
     alias: 'p',
     array: true,
     coerce: (value: readonly string[]) => FastGlob.sync([...value]),
-    default: [
-      'plugins/**.{js,mjs}',
-      'slyde/**.{js,mjs}',
-      '**/*.plugins.{js,mjs}',
-      '**/*.plugin.{js,mjs}',
-      '**/*.slyde.{js,mjs}',
-    ] as string[],
+    default: ['plugins/**.slyde.{js,mjs}'] as string[],
     description: 'A directory or file to import and use as custom tags',
     type: 'string',
   })
