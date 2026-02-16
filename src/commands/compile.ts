@@ -29,7 +29,7 @@ export const addCompileSubCommandFlags = function addCompileSubCommandFlags<T>(
     .positional('file', {
       alias: 'input',
       default: 'slyde.xml',
-      describe: 'The file to compile, and then serve',
+      describe: 'The file to compile, and then write it to disk',
       type: 'string',
     });
 };
