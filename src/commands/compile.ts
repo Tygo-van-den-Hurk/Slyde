@@ -59,12 +59,12 @@ export const compileSubCommandCallback = async function compileSubCommandCallbac
     const prefix = chalk.red(LogLevel.ERROR.toUpperCase());
 
     if (error instanceof Error) {
-      const { message } = new Error(`Unable to write to ${options.file}: ${error.message}`, {
+      const { message } = new Error(`Unable to write to ${options.output}: ${error.message}`, {
         cause: error,
       });
       spinner.fail(`${prefix}: ${message}`);
     } else if (typeof error === 'string') {
-      const { message } = new Error(`Unable to write to ${options.file}`);
+      const { message } = new Error(`Unable to write to ${options.output}`);
       spinner.fail(`${prefix}: ${message}`);
     }
 
