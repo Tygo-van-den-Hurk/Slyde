@@ -67,5 +67,7 @@ export const compileSubCommandCallback = async function compileSubCommandCallbac
       const { message } = new Error(`Unable to write to ${options.file}`);
       spinner.fail(`${prefix}: ${message}`);
     }
+
+    throw error;
   }
 };
