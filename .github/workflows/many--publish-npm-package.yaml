@@ -34,12 +34,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6.0.1
-      - name: Set up Node.js
-        uses: actions/setup-node@v6.1.0
-        with:
-          node-version: 24
-          cache-dependency-path: package-lock.json
-          cache: 'npm'
+      - name: Install Nix using cachix
+        uses: cachix/install-nix-action@v31.7.0
+      - name: Set up Node.js using nix
+        run: nix profile install .#nodejs
       - name: Read `package.json` file and output contents
         id: package
         run: |
@@ -139,11 +137,10 @@ jobs:
       PACKAGE_NAME: ${{ needs.build.outputs.package_name }}
       PACKAGE_VERSION: ${{ needs.build.outputs.package_version }}
     steps:
-      - name: Set up Node.js
-        uses: actions/setup-node@v6.1.0
-        with:
-          node-version: 24
-          registry-url: ${{ matrix.registry_url }}
+      - name: Install Nix using cachix
+        uses: cachix/install-nix-action@v31.7.0
+      - name: Set up Node.js using nix
+        run: nix profile install .#nodejs
       - name: Download build artifact
         uses: actions/download-artifact@v7.0.0
         with: { name: "${{ needs.build.outputs.artifact_name }}" }
