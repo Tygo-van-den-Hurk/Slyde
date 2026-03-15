@@ -137,6 +137,8 @@ jobs:
       PACKAGE_NAME: ${{ needs.build.outputs.package_name }}
       PACKAGE_VERSION: ${{ needs.build.outputs.package_version }}
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6.0.1
       - name: Install Nix using cachix
         uses: cachix/install-nix-action@v31.7.0
       - name: Set up Node.js using nix
