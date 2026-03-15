@@ -2,6 +2,17 @@
 
 **Thank you for considering contributing to this project!** If you’d like to help but can’t open a pull request, starring the repository is still a great way to support the project and help it reach more people. To improve the chances of your pull request being merged, please follow the guidelines in this document.
 
+## Nix
+
+The official and convenient way to setup your development envoirment is using [nix](https://www.nixos.org/). This repository contains all the files you need to set yourself up with one command:
+
+```Shell
+nix develop # if you have flakes enabled
+nix-shell # if you don't
+```
+
+You can use [direnv](https://direnv.net/) to do his automatically.
+
 ## Devcontainers
 
 I case you're not able to install the dependencies there is the option to run the project from a [devcontainer](https://containers.dev/). This is a workspace created using [docker](http://docker.com/). This environment has all the required tools and dependencies for you to work in. See the documentation for your IDE on how to work with [devcontainers](https://containers.dev/).
