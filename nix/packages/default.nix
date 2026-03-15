@@ -1,6 +1,7 @@
 { ... }:
 {
   imports = [
+    ./container.nix
     ./slyde.nix
     ./nodejs.nix
   ];
