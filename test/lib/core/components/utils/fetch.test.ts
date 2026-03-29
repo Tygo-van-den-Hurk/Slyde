@@ -2,7 +2,6 @@ import { type MockInstance, beforeEach, describe, expect, test, vi } from 'vites
 import { toDataURL, toMime } from '#lib/core/components/utils/fetch';
 import { promises as FileSystem } from 'fs';
 
-// --- Mock fs ---
 vi.mock('fs', () => ({
   promises: {
     readFile: vi.fn(),
@@ -10,10 +9,13 @@ vi.mock('fs', () => ({
   },
 }));
 
-// --- Mock fetch ---
-global.fetch = vi.fn();
+global.fetch = vi.fn(async () => ({
+  arrayBuffer: async () => Buffer.from('mock'),
+  headers: {
+    get: () => 'image/png',
+  },
+})) as unknown as typeof fetch;
 
-// --- Logger mock (optional) ---
 vi.mock('#lib/logger', () => ({
   Logger: {
     critical: console.error, // eslint-disable-line no-console

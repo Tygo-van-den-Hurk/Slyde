@@ -137,26 +137,46 @@ To install Slyde using npm from [GitHub' NPM registry](https://npm.pkg.github.co
 To install and run slyde using [docker](http://docker.com), run the following command:
 
 ```Shell
-docker run -it --volume "$PWD:/pwd" --rm ghcr.io/tygo-van-den-hurk/slyde:latest compile
+docker pull ghcr.io/tygo-van-den-hurk/slyde
 ```
 
-### Building from source
-
-> [!WARNING]
-> This option is not recommended even if you chose to install `--global` as this makes your system harder to replicate. The previous options are recommended for almost all use cases.
-
-You can install slyde as a dependency to your project, run the following commands:
+You can then run it like so:
 
 ```Shell
-git clone http://github.com/tygo-van-den-hurk/slyde "$PWD/slyde"
-cd "$PWD/slyde"
-npm ci
-npm run build
-cd -
-npm install "$PWD/slyde"
+docker run -it --volume "$PWD:/pwd" --rm slyde
 ```
 
-You can also install Slyde in your path by adding the `--global` flag. You might need to restart your session after installation. 
+### Nix
+
+If you're using nix, then you can add the flake as an input like so:
+
+```Nix
+{
+  inputs.slyde.url = "github:Tygo-van-den-Hurk/Slyde";
+}
+```
+
+and then add it to your system packages like so:
+
+```Nix
+{ inputs, ... }: {
+  environment.systemPackages = [
+    inputs.slyde.packages.${system}.default
+  ];
+}
+```
+
+if you're not using flakes yet, you can add it to your by fetching it:
+
+```Nix
+let 
+  tarball = builtins.fetchTarball "https://github.com/Tygo-van-den-Hurk/Slyde/archive/main.tar.gz";
+  package = tarball.packages.${system}.default;
+in
+{
+  environment.systemPackages = [ package ];
+}
+```
 
 <contributing-section data-why="So that we can remove it before publishing an image or npm package.">
 
