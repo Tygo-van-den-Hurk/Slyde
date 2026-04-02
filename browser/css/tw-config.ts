@@ -1,5 +1,10 @@
 import type { SlydeHtmlDocumentCssProperties } from '#browser/css/types';
 
+/** Tells the config to force this to scale only using `--unit`. */
+const scaleWithUnit = Object.fromEntries(
+  Array.from({ length: 1000 }, (_ignore, amount) => [amount, `calc(${amount} * var(--unit))`])
+);
+
 /** The config for tailwind in the browser. */
 export const tailwindConfig = function tailwindConfig({
   background,
@@ -9,6 +14,12 @@ export const tailwindConfig = function tailwindConfig({
 }: SlydeHtmlDocumentCssProperties): { theme: Record<string, Record<string, unknown>> } {
   return {
     theme: {
+      /**
+       * Allow **only** the scale of `--unit` which is the unit of measurement in a slyde HTML document as it changes
+       * based on the size of the document. All other measurements don't.
+       */
+      borderWidth: scaleWithUnit,
+
       /**
        * Allow **only** these colors.
        */
@@ -37,9 +48,7 @@ export const tailwindConfig = function tailwindConfig({
        * Allow **only** the scale of `--unit` which is the unit of measurement in a slyde HTML document as it changes
        * based on the size of the document. All other measurements don't.
        */
-      spacing: Object.fromEntries(
-        Array.from({ length: 1000 }, (_ignore, amount) => [amount, `calc(${amount} * var(--unit))`])
-      ),
+      spacing: scaleWithUnit,
     },
   };
 };
