@@ -31,7 +31,7 @@ export class Point extends Component {
   readonly #paddingTop = Component.utils.extract({
     aliases: ['padding-top', 'pt'],
     context: this,
-    fallback: 1,
+    fallback: 100,
     transform: Component.utils.transform.number,
   });
 
@@ -42,7 +42,7 @@ export class Point extends Component {
     const inner = children!();
     // eslint-disable-next-line no-inline-comments
     return /*HTML*/ `
-      <div class="pt-1 block before:content-['${symbolMap[this.#symbol]}'] before:mr-1 before:text-foreground" 
+      <div class="pt-100 block before:content-['${symbolMap[this.#symbol]}'] before:mr-100 before:text-foreground" 
         style="padding-top: calc(${this.#paddingTop} * var(--unit));">
         ${inner}
       </div>

@@ -2,7 +2,7 @@ import type { SlydeHtmlDocumentCssProperties } from '#browser/css/types';
 
 /** Tells the config to force this to scale only using `--unit`. */
 const scaleWithUnit = Object.fromEntries(
-  Array.from({ length: 1000 }, (_ignore, amount) => [amount, `calc(${amount} * var(--unit))`])
+  Array.from({ length: 10000 }, (_ignore, amount) => [amount, `calc(${amount} * var(--unit))`])
 );
 
 /** The config for tailwind in the browser. */

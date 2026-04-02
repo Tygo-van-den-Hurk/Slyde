@@ -17,7 +17,7 @@ const body = /*CSS*/ `
 // eslint-disable-next-line no-inline-comments
 const slide = /*CSS*/ `
   body slyde-component[level="${Component.level.slide}"] {
-    margin-bottom: var(--unit);
+    margin-bottom: calc(var(--unit) * 100);
   }
 
   body slyde-component[level="${Component.level.slide}"]:last-child {

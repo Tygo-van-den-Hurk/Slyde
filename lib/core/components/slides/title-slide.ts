@@ -27,7 +27,7 @@ export class TitleSlide extends Component {
     // eslint-disable-next-line no-inline-comments
     return /*HTML*/ `
       <div class="h-full w-full flex justify-center items-center overflow-hidden">
-        <h2 class="text-primary font-bold text-lg">${this.#title}</h2>
+        <h2 class="text-primary font-bold text-3xl">${this.#title}</h2>
         ${authors}
       </div>
     `;

@@ -29,6 +29,8 @@ export class Highlight extends Component {
   @Component.utils.children.require
   // eslint-disable-next-line jsdoc/require-jsdoc
   public render({ children }: Component.RenderArguments): string {
+    const borderColor = `border-color:${this.#borderColor}`;
+
     // eslint-disable-next-line no-inline-comments
     let title = /*HTML*/ `
       <h4 class="flex items-center gap-2 text-LG font-semibold" style="color:${this.#borderColor}">
@@ -38,12 +40,9 @@ export class Highlight extends Component {
 
     if (this.#title === null) title = '';
 
-    const borderColor = `border-color:${this.#borderColor}`;
-    const borderWidth = `border-width:calc((1/6)*var(--unit));border-left-width:calc((3/6)*var(--unit));`;
-
     // eslint-disable-next-line no-inline-comments
     return /*HTML*/ `
-    <div class="p-1 mt-1" style="${borderColor};${borderWidth}">
+    <div class="p-100 mt-100 border-21 border-l-50" style="${borderColor}">
       ${title}
       <div id="${this.id}-children-container">
         ${children?.()}

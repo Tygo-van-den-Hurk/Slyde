@@ -15,7 +15,7 @@ export class Slide extends Component {
   readonly #padding: number = Component.utils.extract({
     aliases: ['padding', 'p'],
     context: this,
-    fallback: 4,
+    fallback: 400,
     transform: Component.utils.transform.number,
   });
 

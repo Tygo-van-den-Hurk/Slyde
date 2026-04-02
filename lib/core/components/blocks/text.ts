@@ -9,7 +9,7 @@ export class Text extends Component {
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this, jsdoc/require-jsdoc
   public render({ children }: Component.RenderArguments): string {
     // eslint-disable-next-line no-inline-comments
-    return /*HTML*/ `<div class="block py-2">${children?.()}</div>`;
+    return /*HTML*/ `<div class="block py-200">${children?.()}</div>`;
   }
 
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this, jsdoc/require-jsdoc

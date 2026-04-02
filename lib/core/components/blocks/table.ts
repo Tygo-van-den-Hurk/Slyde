@@ -40,9 +40,9 @@ export class Table extends Component {
     // eslint-disable-next-line no-inline-comments
     return /* CSS */ `
       #id table {
-        --line-width: calc(var(--unit) / 8);
-        --padding-x:  calc(var(--unit) * 2); 
-        --padding-y:  calc(var(--unit) / 2);
+        --line-width: calc(var(--unit) * 12.5);
+        --padding-x:  calc(var(--unit) * 200); 
+        --padding-y:  calc(var(--unit) * 50);
 
         border-collapse: collapse;
         border: none;

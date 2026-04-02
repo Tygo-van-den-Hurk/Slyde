@@ -69,7 +69,7 @@ const latex = /*CSS*/ `
   }
 `;
 
-const fontSize = 1;
+const fontSize = 100;
 
 /** The CSS related to the body. */
 const body = /*CSS*/ `

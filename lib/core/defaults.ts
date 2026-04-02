@@ -26,7 +26,7 @@ export const secondary = '#F59E0B' as const;
 export const colors = { background, foreground, primary, secondary } as const;
 
 /** The default size of a presentation property for a slyde presentation. */
-export const size = { height: 45, width: 80 } as const;
+export const size = { height: 4500, width: 8000 } as const;
 
 /** The default icon url of a presentation property for a slyde presentation. */
 export const icon = `data:image/svg+xml;base64,
