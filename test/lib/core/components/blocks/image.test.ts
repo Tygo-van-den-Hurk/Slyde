@@ -6,6 +6,13 @@ import { Image } from '#lib/core/components/blocks/image';
 const impl = async (src: string): Promise<string> => Promise.resolve(src);
 const spy = vi.spyOn(componentUtils, 'toDataURL').mockImplementation(impl);
 
+global.fetch = vi.fn(async () => ({
+  arrayBuffer: async () => Buffer.from('mock'),
+  headers: {
+    get: () => 'image/png',
+  },
+})) as unknown as typeof fetch;
+
 describe('class Image implements Component', () => {
   beforeEach(() => {
     spy.mockReset();
